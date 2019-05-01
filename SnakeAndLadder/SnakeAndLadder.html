@@ -1,0 +1,289 @@
+<HTML>
+<html>
+<head>
+<style>
+.example_path{position:relative;overflow:hidden;width:500px;height:500px;border:3px solid #000;}.example_path
+.example_block1{position:absolute;background-image:url('images/Check1.png');width:30px;height:30px;}
+.example_block2{position:absolute;background-image:url('images/Check2.png');width:30px;height:30px;}
+</style>
+<script>
+	var boardsize = 500;	//500px
+	var eachboxsize = Number(boardsize)/10;
+	var playericonsize = 30;	//30px
+	
+	var player = 1;
+	var player1position = 0;
+	var player2position = 0;
+	var player1won = false;
+	var player2won = false;
+	
+	function GetLeftPxfromPosition(position)
+	{
+		if(position < 1)
+			positiom = 1;
+		
+		var row = Math.floor((position-1)/10);
+		var column = (position-1)%10;
+		if(row % 2 != 0)	//odd rows
+		{
+			column = 9 - column;
+		}
+		
+		return Math.floor((Number(eachboxsize) - Number(playericonsize))/2 + column * Number(eachboxsize));
+	}
+	
+	function GetBottomPxfromPosition(position)
+	{
+		if(position < 1)
+			positiom = 1;
+
+		var row = Math.floor((position-1)/10);
+		return Math.floor((Number(eachboxsize) - Number(playericonsize))/2 + row * Number(eachboxsize));
+	}
+
+	function move(elem, positionstart, positionend) 
+	{
+		var leftstart = GetLeftPxfromPosition(Number(positionstart));
+		var bottomstart = GetBottomPxfromPosition(Number(positionstart));
+		var leftend = GetLeftPxfromPosition(Number(positionend));
+		var bottomend = GetBottomPxfromPosition(Number(positionend));
+		
+		var movement = 0;
+		var maxmovement = Math.max(Math.abs(leftend-leftstart), Math.abs(bottomend-bottomstart));
+		
+		if(maxmovement == 0)
+		{
+			elem.style.left = leftend + 'px';
+			elem.style.bottom = bottomend + 'px';
+			return 0;
+		}
+			
+		function frame() 
+		{
+	        movement++  // update parameters 
+		    
+			var leftnew = Math.floor(leftstart + movement * (leftend-leftstart) / maxmovement);
+			var bottomnew = Math.floor(bottomstart + movement * (bottomend-bottomstart) / maxmovement);
+			
+		    elem.style.left = leftnew + 'px';
+			elem.style.bottom = bottomnew + 'px';
+
+		    if (movement == maxmovement)  // check finish condition
+		      clearInterval(id)
+		}
+	    var id = setInterval(frame, 10) // draw every 10ms
+		
+		return Number(maxmovement)*10;
+	}
+	
+	function getTimeformove(positionstart, positionend)
+	{
+		var leftstart = GetLeftPxfromPosition(Number(positionstart));
+		var bottomstart = GetBottomPxfromPosition(Number(positionstart));
+		var leftend = GetLeftPxfromPosition(Number(positionend));
+		var bottomend = GetBottomPxfromPosition(Number(positionend));
+		
+		return (Math.max(Math.abs(leftend-leftstart), Math.abs(bottomend-bottomstart)) * 10);
+	}
+	
+	function moveRowByRow(elem, positionstart, positionend)
+	{
+		if(positionstart < 1)
+			positionstart = 1;
+	
+		var row1 = Math.floor((Number(positionstart)-1)/10);
+		var row2 = Math.floor((Number(positionend)-1)/10);
+		if((row1 != row2) && (row2 == row1+1))
+		{
+			//positionstart to (row2 * 10)
+			timeformove1 = move(elem, Number(positionstart), Number(row2) * 10);
+			
+			//(row2 * 10) to (row2 * 10 + 1)
+			setTimeout(move, Number(timeformove1)+10, elem, Number(row2) * 10, Number(row2) * 10 + 1);
+			var timeformove2 = getTimeformove(Number(row2) * 10, Number(row2) * 10 + 1);
+			
+			//(row2 * 10 + 1) to  positionend		
+			setTimeout(move, Number(timeformove1)+Number(timeformove2)+10, elem, Number(row2) * 10 + 1, positionend);
+			var timeformove3 = getTimeformove(Number(row2) * 10 + 1, positionend);
+			
+			return Number(timeformove1)+Number(timeformove2)+Number(timeformove3);
+		}
+		else
+		{
+			//moving directly
+			return move(elem, positionstart, positionend);
+		}
+	}
+	
+	function CheckSnakeOrLadder(position)
+	{
+		var sal = snakesandladders.children;
+		for(i=0;i<sal.length;i++)
+		{
+			var salstartposition = sal[i].getAttribute("startpos");
+			if(salstartposition == position)
+			{
+				var salendposition = sal[i].getAttribute("endpos");
+				return salendposition;
+			}
+		}
+		return position;
+	}
+	
+	function SpinButtonEnableDisable(check)
+	{
+		if(check == 1)
+			spinbutton.disabled = true;
+		else
+			spinbutton.disabled = false;
+	}
+	
+	function SetSpinButtonColor(check)
+	{
+		if(check == 1)
+			spinbutton.style.backgroundColor = "rgb(37,113,190)";
+		else
+			spinbutton.style.backgroundColor = "rgb(200,159,31)";
+	}
+	
+	function AlertWinner(check)
+	{
+		if(check == 1)
+			alert("Player1Won");
+		else
+			alert("Player2Won");
+	}
+
+	function spin()
+	{
+		var randomnumber = Math.floor(Math.random() * 6) + 1;
+		var imagename = "url('images/Dice" + randomnumber + ".png')";
+		valuedisplay.style.backgroundImage = imagename;
+		
+		var timeformove1 = 0, timeformove2 = 0;
+		if(player == 1)
+		{
+			if(player2won == false)
+				player++;
+			if(Number(player1position) + Number(randomnumber) > 100)
+			{
+				SpinButtonEnableDisable(0);
+				spinbutton.style.backgroundColor = "rgb(37,113,190)";
+				return;
+			}
+			newplayer1position = Number(player1position)  + Number(randomnumber);
+			timeformove1 = moveRowByRow(player1, Number(player1position), Number(newplayer1position));
+			player1position = Number(newplayer1position);
+			newplayer1position = CheckSnakeOrLadder(Number(player1position));
+			if(player1position!=newplayer1position)
+			{
+				setTimeout(move, Number(timeformove1)+500,player1, Number(player1position), Number(newplayer1position));
+				timeformove2 = getTimeformove(Number(player1position), Number(newplayer1position));
+				player1position = Number(newplayer1position);
+			}
+			setTimeout(SetSpinButtonColor, Number(timeformove1)+Number(timeformove2)+100, 1);
+			if(player1position == 100)
+			{
+				setTimeout(AlertWinner, Number(timeformove1)+Number(timeformove2)+100, 1);
+				player1won = true;
+			}			
+		}
+		else if(player == 2)
+		{
+			if(player1won == false)
+				player = 1;
+			if(Number(player2position)  + Number(randomnumber) > 100)
+			{
+				SpinButtonEnableDisable(0);
+				spinbutton.style.backgroundColor = "rgb(200,159,31)";
+				return;
+			}
+			newplayer2position = Number(player2position)  + Number(randomnumber);
+			timeformove1 = moveRowByRow(player2, Number(player2position), Number(newplayer2position));
+			player2position = Number(newplayer2position);
+			newplayer2position = CheckSnakeOrLadder(Number(player2position));
+			if(player2position!=newplayer2position)
+			{
+				setTimeout(move, Number(timeformove1)+500,player2, Number(player2position), Number(newplayer2position));
+				timeformove2 = getTimeformove(Number(player2position), Number(newplayer2position));
+				player2position = Number(newplayer2position);
+			}
+			setTimeout(SetSpinButtonColor, Number(timeformove1)+Number(timeformove2)+100, 0);
+			if(Number(player2position) == 100)
+			{
+				setTimeout(AlertWinner, Number(timeformove1)+Number(timeformove2)+100, 0);
+				player2won = true;
+			}
+		}
+		
+		setTimeout(SpinButtonEnableDisable, Number(timeformove1)+Number(timeformove2)+100, 0);
+	}
+	
+	function spinbuttonClick()
+	{
+		SpinButtonEnableDisable(1);
+		valuedisplay.style.backgroundImage = "url('images/dice.gif')"
+		setTimeout(spin, 1000);
+	}
+	
+</script>
+</head>
+<body>
+	<Data id="snakesandladders">
+		<!--<ladder id="ladder2" startpos="3" endpos="20"> </ladder>
+		<ladder id="ladder2" startpos="6" endpos="14"> </ladder>
+		<ladder id="ladder2" startpos="11" endpos="28"> </ladder>
+		<ladder id="ladder2" startpos="15" endpos="34"> </ladder>
+		<ladder id="ladder2" startpos="17" endpos="74"> </ladder>
+		<ladder id="ladder2" startpos="22" endpos="37"> </ladder>
+		<ladder id="ladder2" startpos="38" endpos="59"> </ladder>
+		<ladder id="ladder2" startpos="49" endpos="67"> </ladder>
+		<ladder id="ladder2" startpos="57" endpos="76"> </ladder>
+		<ladder id="ladder2" startpos="61" endpos="78"> </ladder>
+		<ladder id="ladder2" startpos="73" endpos="86"> </ladder>
+		<ladder id="ladder2" startpos="81" endpos="98"> </ladder>
+		<ladder id="ladder2" startpos="88" endpos="91"> </ladder>
+		<snake id="snake2" startpos="18" endpos="1"> </snake>
+		<snake id="snake2" startpos="8" endpos="4"> </snake>
+		<snake id="snake2" startpos="26" endpos="10"> </snake>
+		<snake id="snake2" startpos="39" endpos="5"> </snake>
+		<snake id="snake2" startpos="51" endpos="6"> </snake>
+		<snake id="snake2" startpos="54" endpos="36"> </snake>
+		<snake id="snake2" startpos="56" endpos="1"> </snake>
+		<snake id="snake2" startpos="60" endpos="23"> </snake>
+		<snake id="snake2" startpos="75" endpos="28"> </snake>
+		<snake id="snake2" startpos="83" endpos="45"> </snake>
+		<snake id="snake2" startpos="85" endpos="59"> </snake>
+		<snake id="snake2" startpos="90" endpos="48"> </snake>
+		<snake id="snake2" startpos="92" endpos="25"> </snake>
+		<snake id="snake2" startpos="97" endpos="87"> </snake>
+		<snake id="snake2" startpos="99" endpos="63"> </snake>-->
+		
+		<ladder id="ladder2" startpos="1" endpos="38"> </ladder>
+		<ladder id="ladder2" startpos="4" endpos="14"> </ladder>
+		<ladder id="ladder2" startpos="9" endpos="31"> </ladder>
+		<ladder id="ladder2" startpos="21" endpos="42"> </ladder>
+		<ladder id="ladder2" startpos="28" endpos="84"> </ladder>
+		<ladder id="ladder2" startpos="51" endpos="67"> </ladder>
+		<ladder id="ladder2" startpos="72" endpos="91"> </ladder>
+		<ladder id="ladder2" startpos="80" endpos="99"> </ladder>
+		
+		<snake id="snake2" startpos="17" endpos="7"> </snake>
+		<snake id="snake2" startpos="54" endpos="34"> </snake>
+		<snake id="snake2" startpos="62" endpos="19"> </snake>
+		<snake id="snake2" startpos="64" endpos="60"> </snake>
+		<snake id="snake2" startpos="87" endpos="36"> </snake>
+		<snake id="snake2" startpos="93" endpos="73"> </snake>
+		<snake id="snake2" startpos="95" endpos="75"> </snake>
+		<snake id="snake2" startpos="98" endpos="79"> </snake>
+		
+	</Data>
+	<div id="salboard"  class="example_path" style="background-image:url('images/SAL.jpg'); background-size: 100% 100%;">
+		<div id="player1" class="example_block1"></div>
+		<div id="player2" class="example_block2"></div>
+	</div>
+	<br><br>
+	<div id="valuedisplay"; style="width: 100px; height: 100px; border: 1px solid gray; background-size: 100% 100%; background-image:url('images/Dice1.png')"></div>
+	<button id="spinbutton"; style="width: 200px; height: 50px;background-color:rgb(200,159,31);border-radius:6px;" onClick=spinbuttonClick();>ROLL DICE</button>
+</body>
+</html>
