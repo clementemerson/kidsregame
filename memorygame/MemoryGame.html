@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<title>Memory Game</title>
+<style>
+	button{
+		font-size: 25px;
+	}
+</style>
+<head>
+<script type="text/javascript">
+var Symbols = [];
+var Temp = [];
+var TempButtons = [];
+var ButtonsNeedtoRemove = [];
+var CrntFirstGridButton;
+var CrntSecondGridButton;
+var NoOfChances = 0;
+var NoOfPoints = 0;
+var NoOfButtonsClicked = 0;
+var symstr;
+var Needremoveimg = 0;
+var rowOption;
+var columnOption;
+var TempSymbols = [];
+var ButtonArray = [];
+var ButtonsReset = function()
+{
+	for(var Btr = 1; Btr <= (rowOption*columnOption); Btr++ )
+	{
+		if (ButtonsNeedtoRemove.indexOf(Btr) == -1)
+		{
+			ButtonArray[Btr].disabled = false;
+			ButtonArray[Btr].innerText = "";
+		}
+	}
+}
+var timeUp = function () {
+	buttonImage(CrntFirstGridButton,CrntFirstGridButton.hiddenText,"1");
+	buttonImage(CrntSecondGridButton,CrntSecondGridButton.hiddenText,"1");
+	ButtonsReset();
+}
+function buttonClick()
+{
+	ButtonId=event.target;
+	NoOfButtonsClicked++;
+	ButtonId.disabled = true;
+	if (NoOfButtonsClicked == 1)
+		CrntFirstGridButton = ButtonId;
+	if (NoOfButtonsClicked == 2)
+		CrntSecondGridButton = ButtonId;
+		
+	buttonImage(ButtonId,Symbols[ButtonId.id-1],"0")
+	
+	if (NoOfButtonsClicked == 2)
+	{
+		NoOfButtonsClicked = 0;
+		if (CrntFirstGridButton.hiddenText == CrntSecondGridButton.hiddenText)
+		{
+			buttonImage(CrntFirstGridButton,CrntFirstGridButton.hiddenText,"2");
+			buttonImage(CrntSecondGridButton,CrntSecondGridButton.hiddenText,"2");
+			CrntFirstGridButton.disabled  = true;
+			CrntSecondGridButton.disabled  = true;
+			ButtonsNeedtoRemove.push(Number(CrntFirstGridButton.id));
+			ButtonsNeedtoRemove.push(Number(CrntSecondGridButton.id));
+			NoOfPoints++;			
+			PointsVal.value = NoOfPoints;
+			if (NoOfPoints == ((rowOption*columnOption)/2))
+			{
+				FinalMsg.innerText = "Congratulation!..Number of tries is "+(++ChancesVal.value);
+			}
+			ButtonsReset();
+		}
+		else
+		{
+			setTimeout(timeUp, 1000);
+			for(var Btr = 1; Btr <= (rowOption*columnOption); Btr++ )
+			{
+				ButtonArray[Btr].disabled = true;
+			}
+		}
+		NoOfChances++;
+		ChancesVal.value = NoOfChances;
+	}
+}
+function buttonImage(ButtonId,symstr,Needremoveimg)
+{
+	if(Needremoveimg == 0)
+		ButtonId.hiddenText = symstr;
+	
+	if((Needremoveimg == 0) || (Needremoveimg == 2))
+	{
+		var imagename;
+		if((rowOption == "6") && (columnOption == "6"))
+		{
+			symstr = symstr+100;
+			imagename = "url('images/Avenger/" + symstr + ".png')";
+		}
+		else
+		{
+			imagename = "url('images/" + symstr + ".png')";
+		}		
+		ButtonId.style.backgroundImage = imagename;
+	}
+	else if(Needremoveimg == 1)
+		ButtonId.style = "background-image:url('images/QuesMark.jpeg'); width: 100px; height: 100px; opacity: 1"
+}
+function GameReset(ButtonID)
+{
+	document.location.reload();
+}
+function GameStarts(ButtonId)
+{
+	ButtonId.disabled = true;
+	RowOpt.disabled = true;
+	ColumnOpt.disabled = true;
+	for(var u = 0; u < 2; u++)
+	{
+		for(var p = 1; p <= ((rowOption*columnOption)/2);p++)
+		{
+			var SymID = 300+p;
+			TempSymbols.push(SymID);
+		}
+	}
+	var NumOfVal= TempSymbols.length;
+	var RandomValForSymbol = Math.random();
+	RandomValForSymbol = RandomValForSymbol * NumOfVal;
+	for(var Itr = 0; Itr < NumOfVal; Itr++)
+	{
+		var RandomValForSymbol = Math.random();
+		RandomValForSymbol = RandomValForSymbol * NumOfVal;
+		RandomValForSymbol = Math.floor(RandomValForSymbol);
+		while (Temp.indexOf(RandomValForSymbol) != -1)
+		{
+			RandomValForSymbol = Math.random();
+			RandomValForSymbol = RandomValForSymbol * NumOfVal;
+			RandomValForSymbol = Math.floor(RandomValForSymbol);
+		}
+		Temp.push(RandomValForSymbol);
+		Symbols[Itr] = TempSymbols[RandomValForSymbol];
+	}
+	for(var Btr = 1; Btr <= (rowOption*columnOption); Btr++ )
+	{
+		ButtonArray[Btr].disabled = false;
+	}
+}
+
+function htmlLoad()
+{
+	loadOptions(0);
+}
+function loadOptions(opt)
+{
+	for(i = RowOpt.options.length - 1 ; i >= 0 ; i--)
+	{
+		RowOpt.remove(i);
+	}
+	for(i = ColumnOpt.options.length - 1 ; i >= 0 ; i--)
+	{
+		ColumnOpt.remove(i);
+	}
+	for(var h = 4; h<=10; h++)
+	{
+		var option1 = document.createElement("option");
+		option1.value= h;
+		option1.text = h;
+		RowOpt.add(option1); 
+		if((h % 2) == 0){
+		var option2 = document.createElement("option");
+		option2.value= h;
+		option2.text = h;
+		ColumnOpt.add(option2); 
+		}
+	}
+	rowOption = 4;
+	columnOption = 4;
+	buttonLoading("4","4");
+}
+function buttonLoading(rowNo,columnNo)
+{
+var TableToDisp = document.getElementById("dispTable");
+TableToDisp.style = "border = '0'; align = 'center'; cellspacing='0'";
+var rowLen = dispTable.rows.length;
+for(var ii = 0; ii < rowLen; ii++)
+	dispTable.deleteRow(0);
+var BtnIdx = 1;
+for(var i=1; i<=rowNo; i++)
+{	
+	var RowInTable = TableToDisp.insertRow("-1")
+	for(var j=1; j<=columnNo; j++)
+	{
+		var CellInRow = RowInTable.insertCell("-1")
+		CellInRow.style = "width: 100px; height: 100px";
+		ButtonArray[BtnIdx] = document.createElement("Button");
+		ButtonArray[BtnIdx].style = "background-image:url('images/QuesMark.jpeg'); width: 100px; height: 100px";
+		ButtonArray[BtnIdx].id = BtnIdx;
+		ButtonArray[BtnIdx].disabled = true;
+		CellInRow.appendChild(ButtonArray[BtnIdx]);
+		ButtonArray[BtnIdx].addEventListener("click", buttonClick);
+		BtnIdx++;
+	}
+}
+}
+function onPlayerModeChanged()
+{
+	rowOption = RowOpt.selectedOptions[0].text;
+	columnOption = ColumnOpt.selectedOptions[0].text;
+	buttonLoading(rowOption,columnOption);
+}
+</script>
+</head>
+<body onLoad="htmlLoad()">
+	<div class = title align = "center"><font size = "10" face = "Comic Sans MS"><b>Memory Game</b></font></div>
+	<p>
+	<label><font size = "5" face = "Comic Sans MS">Points :&nbsp</label>
+	<input type = "number" id="PointsVal" name = "Points" style="width: 100px; height: 50px; font-size: 25pt; text-align: center;" disabled = true/>
+	<br><br><label><font size = "5" face = "Comic Sans MS">Tries  :&nbsp&nbsp</label>
+	<input type = "number" id="ChancesVal" name = "Chances" style="width: 100px; height: 50px; font-size: 25pt; text-align: center;" disabled = true/>
+	</p>
+	<DIV id="resourceDiv" name="resourceDiv" face = "Comic Sans MS" style=" font-size:12pt;">
+		<br><label><font size = "5" face = "Comic Sans MS">Grid Size :&nbsp</label>
+		<select id="RowOpt" style="width: 100px; height: 50px; font-size: 25pt" onChange="onPlayerModeChanged()" >
+		</select>
+		<label><font size = "5">X  </label>
+		<select id="ColumnOpt" style="width: 100px; height: 50px; font-size: 25pt" onChange="onPlayerModeChanged()" >
+		</select>
+		<BR><BR>
+		<table id="dispTable" border = "0" align = "center" cellspacing="0"/>
+		<table id="StartResetBut" align = "center" cellspacing="50">
+		<tr>
+		<td> <button id="StartButton"; border = "5"; style="width: 150px; height: 50px"; onClick = "GameStarts(StartButton)"><b>Start Game</b></button></td>
+		<td> <button id="ResetButton"; border = "5"; style="width: 180px; height: 50px"; onClick = "GameReset(ResetButton)"><b>Reset Game</b></button></td>
+		</tr>
+		<h2 id="FinalMsg"; align = "center"></h2>
+		</table>
+	</DIV>
+</body>
+</html>
