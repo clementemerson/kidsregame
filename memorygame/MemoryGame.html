@@ -210,28 +210,31 @@ function onPlayerModeChanged()
 </head>
 <body onLoad="htmlLoad()">
 	<div class = title align = "center"><font size = "10" face = "Comic Sans MS"><b>Memory Game</b></font></div>
-	<p>
-	<label><font size = "5" face = "Comic Sans MS">Points :&nbsp</label>
-	<input type = "number" id="PointsVal" name = "Points" style="width: 100px; height: 50px; font-size: 25pt; text-align: center;" disabled = true/>
-	<br><br><label><font size = "5" face = "Comic Sans MS">Tries  :&nbsp&nbsp</label>
-	<input type = "number" id="ChancesVal" name = "Chances" style="width: 100px; height: 50px; font-size: 25pt; text-align: center;" disabled = true/>
-	</p>
+	<br>
+	<div align = "center">
+		<label><font size = "5" face = "Comic Sans MS">Points :&nbsp</label>
+		<input type = "number" id="PointsVal" name = "Points" style="width: 100px; height: 50px; font-size: 25pt; text-align: center;" disabled = true/>
+		<br><br><label><font size = "5" face = "Comic Sans MS">Tries  :&nbsp&nbsp</label>
+		<input type = "number" id="ChancesVal" name = "Chances" style="width: 100px; height: 50px; font-size: 25pt; text-align: center;" disabled = true/>
+	</div>
 	<DIV id="resourceDiv" name="resourceDiv" face = "Comic Sans MS" style=" font-size:12pt;">
-		<br><label><font size = "5" face = "Comic Sans MS">Grid Size :&nbsp</label>
-		<select id="RowOpt" style="width: 100px; height: 50px; font-size: 25pt" onChange="onPlayerModeChanged()" >
-		</select>
-		<label><font size = "5">X  </label>
-		<select id="ColumnOpt" style="width: 100px; height: 50px; font-size: 25pt" onChange="onPlayerModeChanged()" >
-		</select>
-		<BR><BR>
+		<div align = "center">
+			<br><label><font size = "5" face = "Comic Sans MS">Grid Size :&nbsp</label>
+			<select id="RowOpt" style="width: 100px; height: 50px; font-size: 25pt" onChange="onPlayerModeChanged()" >
+			</select>
+			<label><font size = "5">X  </label>
+			<select id="ColumnOpt" style="width: 100px; height: 50px; font-size: 25pt" onChange="onPlayerModeChanged()" >
+			</select>
+		</div>
+		<br>
 		<table id="dispTable" border = "0" align = "center" cellspacing="0"/>
 		<table id="StartResetBut" align = "center" cellspacing="50">
 		<tr>
 		<td> <button id="StartButton"; border = "5"; style="width: 150px; height: 50px"; onClick = "GameStarts(StartButton)"><b>Start Game</b></button></td>
 		<td> <button id="ResetButton"; border = "5"; style="width: 180px; height: 50px"; onClick = "GameReset(ResetButton)"><b>Reset Game</b></button></td>
 		</tr>
-		<h2 id="FinalMsg"; align = "center"></h2>
 		</table>
+		<h2 id="FinalMsg"; align = "center"></h2>
 	</DIV>
 </body>
 </html>
