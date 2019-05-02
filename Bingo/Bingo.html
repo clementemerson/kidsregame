@@ -34,21 +34,19 @@
 				}
 				//Resetting every variable used.
 				scoreVal = 0;
-				
 				startBtn = document.getElementById("startButton");
 				startBtn.innerHTML = '<font size = "4" face = "Comic Sans MS"><B>Reset<B/>';
 				var BingoBtnP = document.getElementById("BingoBtn");
 				childSize = BingoBtnP.rows[0].cells.length;
 				for(iChild = 0; iChild < childSize; iChild++)
 				{
-					BingoBtnP.rows[0].cells[iChild].innertext = "*";
-					//BingoBtnP.rows[0].cells[iChild].innerHTML = '<font size = "10" face = "Comic Sans MS"><B>&nbsp;*&nbsp;&nbsp;</B>';
-					//<font size = "10" face = "Comic Sans MS">
-					BingoBtnP.rows[0].cells[iChild].style.backgroundImage = "none";
+					//BingoBtnP.rows[0].cells[iChild].innertext = "";
+					BingoBtnP.rows[0].cells[iChild].children[0].style.backgroundImage = "none";
 				}
 				
 				res = document.getElementById("result");
 				//res.innerText = 'BINGO';
+				res.innerHTML = '<font size = "10" face = "Comic Sans MS"><B>BINGO</B>';
 				res.style.fontWeight = 'bold';
 			}
 			function htmlLoad(){
@@ -199,7 +197,7 @@
 			function updateScore(){
 				if(scoreVal < 5){
 					var BingoBtnP = document.getElementById("BingoBtn");
-					btnB = BingoBtnP.rows[0].cells[scoreVal];
+					btnB = BingoBtnP.rows[0].cells[scoreVal].children[0];
 					//btnB[scoreVal].innerText = BINGO[scoreVal];
 					btnB.style = "width:100px; height:100px;background-color:auto";
 					var imagename = "url('images/" + BINGO[scoreVal] + ".png')";
