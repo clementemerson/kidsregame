@@ -1,0 +1,240 @@
+<!Doctype html>
+<html>
+	<head>
+		<title> BINGO </title>
+		<script type="text/javascript">
+			var btnCells = [{}];
+			var scoreVal = 0;
+			BINGO = ["B", "I", "N", "G", "O"];
+			function getRandomNumberToN(maxVal){
+				var randomNumArray = [];
+				i = 0;
+				while(i < maxVal)
+				{
+					tmp = Math.floor(Math.random() * maxVal) + 1;
+					if((tmp > 0) && (randomNumArray.indexOf(tmp) == -1))
+					{
+						randomNumArray[i] = tmp;
+						i++;
+					}
+				}				
+				return randomNumArray;
+			}
+			function ReloadState(){				
+				count = btnCells.length;
+				var randomArray = getRandomNumberToN(count);
+				for(itr = 0; itr < count; itr++){
+					//btnCells[itr].btn.innerText = randomArray[itr];
+					btnCells[itr].btn.disabled = false;
+					btnCells[itr].btn.style = "width:100px; height:100px;background-color:auto";
+					var imagename = "url('images/" + randomArray[itr] + ".png')";
+					btnCells[itr].btn.style.backgroundImage = imagename;
+					btnCells[itr].number = randomArray[itr];
+					btnCells[itr].state = false;
+				}
+				//Resetting every variable used.
+				scoreVal = 0;
+				
+				startBtn = document.getElementById("startButton");
+				startBtn.innerHTML = '<font size = "4" face = "Comic Sans MS"><B>Reset<B/>';
+				var BingoBtnP = document.getElementById("BingoBtn");
+				childSize = BingoBtnP.rows[0].cells.length;
+				for(iChild = 0; iChild < childSize; iChild++)
+				{
+					BingoBtnP.rows[0].cells[iChild].innertext = "*";
+					//BingoBtnP.rows[0].cells[iChild].innerHTML = '<font size = "10" face = "Comic Sans MS"><B>&nbsp;*&nbsp;&nbsp;</B>';
+					//<font size = "10" face = "Comic Sans MS">
+					BingoBtnP.rows[0].cells[iChild].style.backgroundImage = "none";
+				}
+				
+				res = document.getElementById("result");
+				//res.innerText = 'BINGO';
+				res.style.fontWeight = 'bold';
+			}
+			function htmlLoad(){
+				var count = 5;
+				var tbl = document.getElementById("btnTBL")
+				cellNo = 0;
+				for(rItr = 0; rItr < count; rItr++){
+					var tRow = tbl.insertRow(rItr);
+					for(cItr = 0; cItr < count; cItr++){
+						var tCell = tRow.insertCell(cItr);
+						tCell.style = "width:100px; height:100px;";
+						var btnElem = document.createElement("button");
+						btnElem.style = "width:100px; height:100px";
+						btnElem.disabled = true;
+						btnElem.addEventListener("click", buttonClicked, cellNo);
+						tCell.appendChild(btnElem);
+						btnCells[cellNo++] ={"btn":btnElem};
+					}
+				}
+			}
+			function setButtonState(elem, btnId, flag){
+				switch(flag)
+				{
+					case 1:
+					{
+						btnCells[btnId].state = true;
+						elem.style = "width:100px; height:100px;background-color:auto";
+						var imagename = "url('images/" + btnCells[btnId].number + "_.png')";
+						elem.style.backgroundImage = imagename;
+						break;
+						}
+					case 2:
+					{
+						btnCells[btnId].state = false;
+						elem.style = "width:100px; height:100px;background-color:auto";
+						var imagename = "url('images/" + btnCells[btnId].number + ".png')";
+						elem.style.backgroundImage = imagename;
+						break;
+					}
+					case 3:
+					{
+						btnCells[btnId].state = true;
+						elem.style = "width:100px; height:100px;background-color:auto";
+						//"display:inline-block; background-color:orange; width:30px; height:30px;";
+						var imagename = "url('images/" + btnCells[btnId].number + "-.png')";
+						elem.style.backgroundImage = imagename;
+						elem.disabled = true;
+						break;	
+					}
+					case 4:
+					{
+						btnCells[btnId].state = true;
+						elem.disabled = true;
+						break;
+					}
+				}
+			}
+			function buttonClicked(){
+				for(itr = 0; itr < btnCells.length; itr++)
+				{
+					if(btnCells[itr].btn === this)
+						break;
+				}
+				if(btnCells[itr].state === false)
+					setButtonState(this, itr, 1);
+				else
+					setButtonState(this, itr, 2);
+				checkScore(itr);
+				if(scoreVal == 5)
+					endGame();
+			}
+			function checkScore(indexVal){
+				//find Row & Column No:	//value from 0 to 4
+				var rowNo = Math.floor(indexVal / 5);
+				var colNo = Math.floor(indexVal % 5);
+				
+				//find which diag the cell belongs to
+				isDiag1 = false;
+				isDiag2 = false;
+				if(Math.floor(indexVal % 6) == 0) isDiag1 = true;
+				if(indexVal != 0 && indexVal != 24 && Math.floor(indexVal % 4) == 0) isDiag2 = true;
+				
+				rflag = true;
+				//check State of cells in that row
+				for(irow = rowNo*5; irow < (rowNo * 5) + 5; irow++){
+					if(btnCells[irow].state === false)
+					{
+						rflag = false;
+						break;
+					}
+				}
+				if(rflag == true){
+					for(irow = rowNo*5; irow < (rowNo * 5) + 5; irow++){
+						setButtonState(btnCells[irow].btn, irow, 3);
+					}
+					updateScore();
+				}
+				
+				//check State of cells in that column
+				cflag = true;
+				for( iCol = colNo; iCol <= colNo + (4 * 5); iCol+=5 ){
+					if(btnCells[iCol].state === false)
+					{
+						cflag = false;
+						break;
+					}
+				}					
+				if(cflag == true){
+					for( iCol = colNo; iCol <= colNo + (4 * 5); iCol+=5 ){
+						setButtonState(btnCells[iCol].btn, iCol, 3);
+					}
+					updateScore();
+				}
+				
+				if(isDiag1 == true){
+					d1Flag = true;
+					for(iD1 = 0; iD1 <= 6 *4; iD1+=6){
+						if(btnCells[iD1].state === false)
+						{
+							d1Flag = false;
+							break;
+						}	
+					}
+					if(d1Flag == true){
+						for(iD1 = 0; iD1 <= 6 *4; iD1+=6){
+							setButtonState(btnCells[iD1].btn, iD1, 3);
+						}
+						updateScore();
+					}
+				}
+				if(isDiag2 == true){
+					d2Flag = true;
+					for(iD2 = 4; iD2 <= 4*5; iD2+=4){
+						if(btnCells[iD2].state === false)
+							{
+								d2Flag = false;
+								break;
+							}
+					}
+					if(d2Flag == true){
+						for(iD2 = 4; iD2 <= 4*5; iD2+=4){
+							setButtonState(btnCells[iD2].btn, iD2, 3);
+						}
+						updateScore();
+					}
+				}
+			}
+			function updateScore(){
+				if(scoreVal < 5){
+					var BingoBtnP = document.getElementById("BingoBtn");
+					btnB = BingoBtnP.rows[0].cells[scoreVal];
+					//btnB[scoreVal].innerText = BINGO[scoreVal];
+					btnB.style = "width:100px; height:100px;background-color:auto";
+					var imagename = "url('images/" + BINGO[scoreVal] + ".png')";
+					btnB.style.backgroundImage = imagename;
+					btnB.innerText = "";
+					scoreVal++;
+				}
+			}
+			function endGame(){
+				for(itr = 0; itr < btnCells.length; itr++)
+					setButtonState(btnCells[itr].btn, itr, 4);
+				res = document.getElementById("result");
+				//<font size = "10" face = "Comic Sans MS"><B>Winner Winner! Chicken Dinner:P!</B></font>
+				res.innerHTML = '<font size = "10" face = "Comic Sans MS"><B>Winner Winner! Chicken Dinner :P</B>';
+				res.style.fontWeight = 'bold';
+			}
+		</script>
+	</head>	
+	<body background="images/BckgroundImg.png" onLoad="htmlLoad()">
+		<br><br><br><br>
+		<p id="result"; align = "center"><span id= "sp1"; style="text-align:center;";><font size = "10" face = "Comic Sans MS"><B>BINGO</B></font></span></p>
+		<table id = "BingoBtn"; align = "center"; margin = "0">
+			<tr>
+				<td><button id="b"; disabled = "true"; style="width: 100px; height: 100px";">&nbsp;</button></td>
+				<td><button id="i"; disabled = "true"; style="width: 100px; height: 100px";">&nbsp;</button></td>
+				<td><button id="n"; disabled = "true"; style="width: 100px; height: 100px";">&nbsp;</button></td>
+				<td><button id="g"; disabled = "true"; style="width: 100px; height: 100px";">&nbsp;</button></td>
+				<td><button id="o"; disabled = "true"; style="width: 100px; height: 100px";">&nbsp;</button></td>
+			</tr>
+		</table>
+		<BR><BR>
+		<table id = "btnTBL"; align = "center" cellspacing="0" ></table>
+		
+		<p align = "center">
+			<button id = "startButton"; border = "5"; style="width: 150px; height: 50px"; onClick = "ReloadState()"><font size = "4" face = "Comic Sans MS"><B>Start Game<B/> </button>
+		</p>
+	</body>
+</html>
