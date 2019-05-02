@@ -132,18 +132,12 @@
 	
 	function SpinButtonEnableDisable(check)
 	{
-		if(check == 1)
-			spinbutton.disabled = true;
-		else
-			spinbutton.disabled = false;
-	}
-	
-	function SetSpinButtonColor(check)
-	{
-		if(check == 1)
-			spinbutton.style.backgroundColor = "rgb(37,113,190)";
-		else
-			spinbutton.style.backgroundColor = "rgb(200,159,31)";
+		if(check == 1) {
+			valuedisplay.disabled = true;
+		}
+		else {
+			valuedisplay.disabled = false;
+		}
 	}
 	
 	function AlertWinner(check)
@@ -157,7 +151,7 @@
 	function spin()
 	{
 		var randomnumber = Math.floor(Math.random() * 6) + 1;
-		var imagename = "url('images/dice" + randomnumber + ".png')";
+		var imagename = "url('images/Dice" + randomnumber + ".png')";
 		valuedisplay.style.backgroundImage = imagename;
 		
 		var timeformove1 = 0, timeformove2 = 0;
@@ -168,7 +162,6 @@
 			if(Number(player1position) + Number(randomnumber) > 100)
 			{
 				SpinButtonEnableDisable(0);
-				spinbutton.style.backgroundColor = "rgb(37,113,190)";
 				return;
 			}
 			newplayer1position = Number(player1position)  + Number(randomnumber);
@@ -181,7 +174,6 @@
 				timeformove2 = getTimeformove(Number(player1position), Number(newplayer1position));
 				player1position = Number(newplayer1position);
 			}
-			setTimeout(SetSpinButtonColor, Number(timeformove1)+Number(timeformove2)+100, 1);
 			if(player1position == 100)
 			{
 				setTimeout(AlertWinner, Number(timeformove1)+Number(timeformove2)+100, 1);
@@ -195,7 +187,6 @@
 			if(Number(player2position)  + Number(randomnumber) > 100)
 			{
 				SpinButtonEnableDisable(0);
-				spinbutton.style.backgroundColor = "rgb(200,159,31)";
 				return;
 			}
 			newplayer2position = Number(player2position)  + Number(randomnumber);
@@ -208,7 +199,6 @@
 				timeformove2 = getTimeformove(Number(player2position), Number(newplayer2position));
 				player2position = Number(newplayer2position);
 			}
-			setTimeout(SetSpinButtonColor, Number(timeformove1)+Number(timeformove2)+100, 0);
 			if(Number(player2position) == 100)
 			{
 				setTimeout(AlertWinner, Number(timeformove1)+Number(timeformove2)+100, 0);
@@ -278,12 +268,17 @@
 		<snake id="snake2" startpos="98" endpos="79"> </snake>
 		
 	</Data>
-	<div id="salboard"  class="example_path" style="background-image:url('images/SAL.jpg'); background-size: 100% 100%;">
-		<div id="player1" class="example_block1"></div>
-		<div id="player2" class="example_block2"></div>
+	<div align="center" style="margin:auto;">
+		<br>
+		<div>
+			<h1>Snake and Ladder Game</h1>
+		</div>
+		<div id="salboard"  class="example_path" style="background-image:url('images/SAL.jpg'); background-size: 100% 100%;">
+			<div id="player1" class="example_block1"></div>
+			<div id="player2" class="example_block2"></div>
+		</div>
+		<br>
+		<button id="valuedisplay"; style="border:none; background: none; width: 100px; height: 100px; background-size: 100% 100%; background-image:url('images/Dice1.png')" onClick=spinbuttonClick();></button>
 	</div>
-	<br><br>
-	<div id="valuedisplay"; style="width: 100px; height: 100px; border: 1px solid gray; background-size: 100% 100%; background-image:url('images/Dice1.png')"></div>
-	<button id="spinbutton"; style="width: 200px; height: 50px;background-color:rgb(200,159,31);border-radius:6px;" onClick=spinbuttonClick();>ROLL DICE</button>
 </body>
 </html>
