@@ -19,54 +19,106 @@
         .bg-dark-blue {
             background-color: #0071BC;
         }
+
+        @media (min-width: 576px) { 
+            .display-desktop {
+                display: block;
+            }
+            .display-mobile {
+                display: none;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .display-desktop {
+                display: none;
+            }
+            .display-mobile {
+                display: block;
+            }
+
+            .card-padding {
+                padding: 10px;
+            }
+        }
     </style>
   </head>
   <body>
     <div class="jumbotron bg-dark-blue text-white">
-      <h1 class="display-4">RE Games!</h1>
+      <h1 class="display-2">RE Games!</h1>
       <p class="lead">When get bored, come here...</p>
       <hr class="my-4">
       <p>We will make it worse.</p>
     </div>
+
+    <div class="display-mobile">
+        <div class="row justify-content-center">
+            <div class="card col-5 card-padding">
+                <a href="memorygame\MemoryGame.html" target="blank"class="btn btn-primary">
+                    <img src="https://cdn.kastatic.org/ka-perseus-images/303fff16bcb3b75de2881949fe2a9451c1fcc973.gif" class="card-img-top" alt="...">
+                </a>
+            </div>
+
+            <div class="card col-5 card-padding">
+                <a href="SnakeAndLadder\SnakeAndLadder.html" target="blank">
+                    <img src="https://i.makeagif.com/media/10-02-2015/fY8D-g.gif" class="card-img-top" alt="...">
+                </a>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">        
+            <div class="card col-5 card-padding">
+                <a href="Bingo\Bingo.html" target="blank">
+                    <img src="https://www.gifmania.us/Animated-Gifs-Objects/Free-Animations-Toys/Images-Casino/Bingo/Bingo-Cardboard-89303.gif" class="card-img-top" alt="...">
+                </a>
+            </div>
     
+            <div class="card col-5 card-padding">
+                <a href="Minesweeper\MineSweeper.html" target="blank">
+                    <img src="https://media.giphy.com/media/l3V0GQMoaDLVbjXEI/giphy.gif" class="card-img-top" alt="...">
+                </a>
+            </div>
+        </div>
+    </div>
     
-    <div class="row justify-content-center">
-        <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-6 col-11">
-            <img src="https://cdn.kastatic.org/ka-perseus-images/303fff16bcb3b75de2881949fe2a9451c1fcc973.gif" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Memory Game</h5>
-                <p class="card-text">Put your memory to the test with these quick-play games! Match all the cards in as few moves as you can.</p>
-                <a href="memorygame\MemoryGame.html" target="blank"class="btn btn-primary">Play</a>
+    <div class="display-desktop">    
+        <div class="row justify-content-center">
+            <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-6 col-11">
+                <img src="https://cdn.kastatic.org/ka-perseus-images/303fff16bcb3b75de2881949fe2a9451c1fcc973.gif" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Memory Game</h5>
+                    <p class="card-text">Put your memory to the test with these quick-play games! Match all the cards in as few moves as you can.</p>
+                    <a href="memorygame\MemoryGame.html" target="blank"class="btn btn-primary">Play</a>
+                </div>
+            </div>
+
+            <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-6 col-11">
+                <img src="https://i.makeagif.com/media/10-02-2015/fY8D-g.gif" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Snake and Ladder</h5>
+                    <p class="card-text">Ladders will take you up but Snakes will take you down! This is a great game for a 100 day party!</p>
+                    <a href="SnakeAndLadder\SnakeAndLadder.html" target="blank"class="btn btn-primary">Play</a>
+                </div>
+            </div>
+
+            <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-6 col-11">
+                <img src="https://www.gifmania.us/Animated-Gifs-Objects/Free-Animations-Toys/Images-Casino/Bingo/Bingo-Cardboard-89303.gif" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Bingo</h5>
+                    <p class="card-text">You've never seen free bingo games like this.</p>
+                    <a href="Bingo\Bingo.html" target="blank"class="btn btn-primary">Play</a>
+                </div>
+            </div>
+
+            <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-6 col-11">
+                <img src="https://media.giphy.com/media/l3V0GQMoaDLVbjXEI/giphy.gif" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Minesweeper</h5>
+                    <p class="card-text">Original and best Minesweeper game. Play instantly in the browser.</p>
+                    <a href="Minesweeper\MineSweeper.html" target="blank"class="btn btn-primary">Play</a>
+                </div>
             </div>
         </div>
-
-        <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-6 col-11">
-            <img src="https://i.makeagif.com/media/10-02-2015/fY8D-g.gif" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Snake and Ladder</h5>
-                <p class="card-text">Ladders will take you up but Snakes will take you down! This is a great game for a 100 day party!</p>
-                <a href="SnakeAndLadder\SnakeAndLadder.html" target="blank"class="btn btn-primary">Play</a>
-            </div>
-        </div>
-
-        <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-6 col-11">
-            <img src="https://www.gifmania.us/Animated-Gifs-Objects/Free-Animations-Toys/Images-Casino/Bingo/Bingo-Cardboard-89303.gif" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Bingo</h5>
-                <p class="card-text">You've never seen free bingo games like this.</p>
-                <a href="Bingo\Bingo.html" target="blank"class="btn btn-primary">Play</a>
-            </div>
-        </div>
-
-        <div class="card col-xl-2 col-lg-3 col-md-4 col-sm-6 col-11">
-            <img src="https://media.giphy.com/media/l3V0GQMoaDLVbjXEI/giphy.gif" class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Minesweeper</h5>
-                <p class="card-text">Original and best Minesweeper game. Play instantly in the browser.</p>
-                <a href="Minesweeper\MineSweeper.html" target="blank"class="btn btn-primary">Play</a>
-            </div>
-        </div>
-
     </div>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
