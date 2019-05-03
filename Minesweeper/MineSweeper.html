@@ -1,0 +1,538 @@
+<html>
+<title>Minesweeper</title>
+<head>
+<script type="text/javascript" >
+	var cells = [];
+	var emptyCells = [];
+	var rowCnt = 10;
+	var colCnt = 20;
+	var emptyCelIter = 0;
+	var complexity = 0.15;
+	
+	var deadline = new Date().getTime(); 
+	var timeRet;
+	var questionDown = 0;
+	var mineDown = 0;
+	var minePicked = 0;
+	var mineCnt = 0;
+  
+	function runTime() { 
+	  
+		var now = new Date().getTime(); 
+		var t = now - deadline ; 
+		var days = Math.floor(t / (1000 * 60 * 60 * 24)); 
+		var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60)); 
+		var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60)); 
+		var seconds = Math.floor((t % (1000 * 60)) / 1000); 
+		//document.getElementById("second").innerHTML =days+":"+ hours+":"+minutes+":"+seconds;  
+		document.getElementById("second").innerHTML = ("00"+hours).slice(-2)+":"+("00"+minutes).slice(-2)+":"+("00"+seconds).slice(-2);  
+	} 
+
+	function  isRanAvbl(randomNos,newRandNo){
+		for(var i =0; i < randomNos.length; i ++){
+			if(randomNos[i] == newRandNo)
+				return true;
+		}
+		return false;				
+	}
+	function nearByMineCnt(randomNos,rowCnt,colCnt,i,j){
+		var mineCnt = 0;
+		for(var ik = i-1; ik< i+2; ik++){
+			for(var jk = j-1; jk<j+2; jk++){
+				if(ik >= 0 && ik < rowCnt && jk >=0 && jk <colCnt)
+					if(isRanAvbl(randomNos, ik*colCnt + jk) == true )
+						mineCnt += 1;
+			}
+		}
+		return mineCnt;
+
+	}
+	function checkWin(){
+		var isWin = true;
+		for(var i =0 ; i< cells.length ; i++){
+			if(cells[i].hiddenText != "*"){
+				if(cells[i].isProcessed == false)
+					isWin = false;
+			}
+		}
+		if(isWin){
+			for(var i =0 ; i< cells.length ; i++){
+				if(cells[i].hiddenText == "*"){
+					displayMine(cells[i],101);
+				}
+			}
+			clearInterval(timeRet); 
+			refreshButton.style.backgroundImage = "url('winner.png')"
+			mineDisp.innerHTML = "000";
+		}
+	}
+	function displayMine(myButton,opt){
+		
+		if(opt > 99)
+		{
+			switch(opt){
+			case 100:
+				myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACdCAIAAAC8SeQJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAVCSURBVHhe7dyNchpHFERh4Tw46MWMcZ7LkTEc6zooQy2NuPRO+qtb8k+NZnY5XsmlKH55izX7dtVut0vgdaPkQAKvHiUHEnj1KDmQwKtHyYEEXj1KDiTw6lFyIIFXj5IDCbx6lBxI4BWg1cDryTHkSAK7o+QAGccS2B0lB8g4lsDuKDlAxrEEdkfJATKOJbA7Sg6QcSyB3VFygIxjCeyOkgNkHEtgd5QcIONYAruj5AAZx/TAnBAPRqjfttvt+9slEtgdoVQJ7I5QqgR2RyjV2gN/58eHeOjmSxFKNcET/K8M+/2en93owzta1D0ilGqOD9FfD2LW/3Da6uv55w4IpZrmc3A9cELsT/zz8ekIpZrtL1n7w/GN8vyd3vHb4fD36VdGCKWaLfDhcAp1O/kdH41QqkkCn/Mc3/7z8iKPZ2NCqWZ6gn99ZD52+vGh3MI57+KGUKrZPkRfNLtp2MIMoVQJXMMWZgilSuAatjBDKFUC17CFGUKpEriGLcwQSpXANWxhhlCqBK5hCzOEUiVwDVuYIZTKMfDF6942HG+GUKoEruF4M4RSJXANx5shlCqBazjeDKFUCVzD8WYIpUrgGo43QyhVAtdwvBlCqRK4huPNEErlFfj8PRUXr3vbnK/BDaFUjk/w+Vsy5G/MkIfjzRBK9ZzAF6/sn9Pf9X24ODOEUtkFfuJwcWYIpfIK/GNz+Tudw8WZIZQqT3ANF2eGUCq7wG+bzcXvtA0XZ4ZQqjzBNVycGUKpEriGizNDKFUC13BxZgilSuAaLs4MoVQJXMPFmSGU6jmBr7t43duG480QSpXANRxvhlAq98CdX5rmeDOEUuUJruF4M4RS2QU+7G8K/OXD7+jDFZghlMr6CX7bbN42f73/cjBfPuurmxxvhlAq68DHT8Cd/32J480QSuUV+PzvVV287m1zugQ7hFLZPsHCJ9df73LPE8/xZgil8vtL1n3/FNI9n4+5AjOEUjk+wcK/V3V+lzv/cJy3ckMolWPge1w0u2nYwgyhVAlcwxZmCKVK4Bq2MEMoVQLXsIUZQqkSuIYtzBBKlcA1bGGGUKoErmELM4RSJXANW5ghlCqBa9jCDKFUswW+7uUqFpkhlCqBC4vMEEqVwIVFZgilSuDCIjOEUiVwYZEZQqkSuLDIDKFUCVxYZIZQqgQuLDJDKFUCFxaZIZQqgQuLzBBKlcCFRWYIpUrgwiIzhFIlcGGRGUKpEriwyAyhVAlcWGSGUKoELiwyQyhVAhcWSf9rxeMQSpXAhUVmCKVK4MIiM4RSJXBhkRlCqdYXmBrtOL4doVQJvBTHtyOUKoGX4vh2hFIl8FIc345QqgReiuPbEUqVwEtxfDtCqdYR+M8vLfF6t+P49q9zEUqVJ3gpjm9HKFUCL8Xx7QilSuClOL4doVTPCcxr9r/BbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCqBO7AbUsIpUrgDty2hFCq5wSO5QilSmB3hFIlsDtCqRLYHaFUCeyOUKoEdkcoVQK7I5Qqgd0RSpXA7gilSmB3hFJdC8wJA2wQ3hJ4cgk8uQSeXAJPTgm83++Pb7fbLXuEsTzBk9MD5wlehTzBk0vgyV37fjCWxJpdC/z6+sqqWK08wZNL4Mkl8OQSeHIJPLkEntpu9xNtlnJnIeg/UQAAAABJRU5ErkJg)";
+				myButton.style.backgroundSize = "100% 100%";
+			break;
+			case 101:
+				myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ0AAACdCAIAAAAhRO2BAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOjSURBVHhe7ZyNUttIEAZx7v1fKcaX50o4x+rKj8mlZJFdpE53fUXAtZ7ZUbM4ZYyfnsNIXp3k1UleneTVSV6d5NVJXp3k1UleneTVSV6d5NVJXp3k1UleneTVSV6d5NVJXp3k1cmhvf7Lv0MYWnw4Rz+vP1398/nMZw/y6o7HlnpF8HP442WjzV9wK/Vx+fzQOB5fvx+vDY7/4LfFflD9v+l8uX7Yctpud3y+XD7dvjKg8nq53Pw8zuY77haD18XK9eOXp6fNkanVnNevP36vej6/ErYySxUNqnnuVD0USljIK6GEhbwSSljIK6GEhbwSSljIK6GEhbwSSljIK6GEhd3Nc3e5p4X2FvJKaG8hr4T2FvJKaG8hr4T2FvJKaG8hr4T2FvJKaG9hR/Msr1i4u9zTsuxBw+7mWV7wsPllD5tDewvvMM/dBf0x83V+C5uzsC+v7xg2Z2FHXj+f7m+ZGTZnofNK2JyFfXl9OZ3ubpkWNmeh80rYnIW8EjZnIa+EzVnIK2FzFvJK2JyF3c1zd7mnhfYW8kpob2HXXmc+XUx7C51XQnsL+5rncn7I64dXt2wPO7Cw3/P6cjq9nP759uX/5MOfeuqR9hb26/X64DrzNzy0t7CjeZb3Ubq73NNy24KHfZ7XDQ+cX+/ylvNNewv7mueN79XzlsdadmBhd/NseB+l5S5v/J5YSmlQzXOn6qFQwkJeCSUs5JVQwkJeCSUs5JVQwkJeCSUs5JVQwkJeCSUs5JVQwoJtnt/w9FtYZCGvwCILeQUWWcgrsMhCXoFFFvIKLLKQV2CRhbwCiyzkFVhkIa/AIgt5BRZZyCuwyEJegUUW8gosspBXYJGFvAKLLOQVWLTpDw52SF6BRRbyCiyykFdgkYWDzYOE6dD+OOR1FbQ/DnldBe2PQ15XQfvjkNdV0P445HUVtD8OB9jxj08AcZmnQ/vjPBvVeV0F7Y9DXldB++OQ11XQ/ji8w465VH8NjD2XvA6HseeS1+Ew9lzyOhzGnkteh8PYc8nrcBh7LnkdDmPPJa/DYey55HU4jD2XvA6HseeS1+Ew9lzyOhzGnkteh8PYc8nrcBh7LnkdDmPPJa/DYey55HU4jD2XvA6HseeS1+Ew9lzyOhzGnsv7dI3R5NVJXp3k1UleneTVSV6d5NVJXp3k1UleneTVSV6d5NVJXp3k1UleneTVSV6d5NVJXp3k1UleneTVSV6d5NVJXp3k1UleneTVyPPzf0jg/zhlzanCAAAAAElFTkSuQmCC)";
+				myButton.style.backgroundSize = "100% 100%";
+				break;
+			case 102:
+				myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ8AAACqCAIAAAA8zgqpAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAANSSURBVHhe7dkxbl43FAZR7fyXVqbsLA6CsSs+C1+MABpiTkE2xG0Gt+Lb35H761l19Sh5Ul09Sp5UV4+SJ9XVo+RJdfUoeVJdPUqeVFePkifV1aPkSXX1KHlSXQFaPfj41/tJdQXI+ICSJ9UVIOMDSp5UV4CMDyh5Ul0BMj6g5El1Bcj4gJIn1RUg4wNKnlRXgIwPKHlSXQEyPqDkSXUFyPiAkid/VJfx+Z/R6qfX6/Xr/L3qCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTaVVeAVrvqCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTaVVeAVrvqCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTaVVeAVrvqCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTaVVeAVrvqCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTafVGX8Q+Yke+qujer7s2qe7Pq3uw/1v38/PznfL1ejMm31O7e7I/qtrvfXLt7s+re7I1QD3gVpy/qfnx88DBC7e7Nqnuz6t6sujer7s2qe7Pq3qy6N3vjzo2qe7Pq3qy6N6vuzap7s+rerLo3+7puH/he7e693t9/AKwTJ924A8g7AAAAAElFTkSuQmCC)";
+				myButton.style.backgroundSize = "100% 100%";
+				break;
+			case 201:
+				myButton.style.backgroundImage = "url('question.png')";
+			break;
+			case 202:
+				myButton.style.backgroundImage = "url('question_down.png')";
+			break;
+			
+		}
+		return;
+		}
+		switch(myButton.nearbyMine){
+		case 0:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACVCAIAAAA195QbAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGASURBVHhe7dTBCYBADABB+2/qcp2pcAiWMLDzCPkvyTUza61nBvUm/Oy9zxbHL2FEJ+F3fz1VTlfIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8krIKyGvhLwS8kqIm7kBKMZ6/dmBdKIAAAAASUVORK5C)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case 1:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAACVCAIAAADewC8YAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAPsSURBVHhe7Z0NUuJAGAXR+59JwHPtXzRPPhxkd8FxJm1116tCKc3LTNcEi4S42+/3B8Gyy+PhcDwe85VwKH9C5MXfaeV5LMXh+mOjPzb6Y6M/Nvpjoz82+mOjPzb6Y6O/lac80tDfB4DeytdfyxH1HrD+2OiPjf5eOB0z97Rz2N/N38Pu193JJlDor7L8uutvMo2Sm5JNoNBfJZtAob9KNoFCf5VsAoX+KtkECv1VsgkU+qtkEyj0V8kmUPD8NZPeMSlAob9KClDor5ICFPqrpACF/iopQKG/SgpQ6K+SAhT6q6QABc/fbvdzSTP1XZICFBv1d+0ivuX5ZtI7Jh0otuivmdYlu4tnviKpR0Hy93bY/HF6vm9Sj4Lhb0xSj2JD/k7XfjXTuub1z5b2yb5JPYqt+Du/9UwzrcOSehQePyupRzHH3/kHtC5v+tRM67CkHsXk9ffh9c7NtA5L6lF4/KykHoX+KqlHMcdfM3EbSXYOhf4q2TkU+qtk51DM9/f48Pv824nJzqGY4u+5mbiNJHuHwuNnJTuHYrS/9cTs+4n7r/NBvn/9IePX3/PxeGwmbiPJDqKYtv5uuobF87fXYLz+ef3ENeb4W7njNnFev9Qw2l9ztujadWZ/4fUPGa8fDDPX3300k94xKUChv0oKUOivkgIU+qukAIX+KilAob9KClDor5ICFPqrpACF/iopQKG/SgpQ6K+SAhT6q6QAhf4qKUChv0oKUOivkgIU+qukAIX+KilAob9KClDor5ICFPqrpACF/iopQKG/SgpQ6K+SAhT6q6QAhf4qKUChv0oKUOivkgIU+qukAIX+KilAob9KClDor5ICFPqrpADF1v1dfsCzmfSOSQEKyvp7zmNvf+d3f0oBimn+loX19vn3cnOFdz9wmu5eeXz7IgUoxvt7yuO9vH74/UtuIZICFFPW38t6WhffTfcvWH+lmfSOWVtYTH79+6e/5geWb5tJ75h0oJjj74778XzRPUOa3H2joAxsOKP9LcfAhWbwt2Y7tww9JcMbzpz11wz+GyQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG47++iQDG85of13O324wGd5w5qy/Mf/PaGQysOHM8XfipuvP5JIp/u68flAuGe/vs9fvyjnTjp/LyluX4H9cPy9Xmfz6J59Ef2z0x0Z/bPTHRn9s9MdGf2z0x0Z/bPTHRn9s9MdGf2z0x0Z/bPTHRn9s9MdGf2z0x0Z/bPTHRn9s9MdGf2QOhz/XNJLtrIGZagAAAABJRU5ErkJg)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case 2:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAACVCAIAAADewC8YAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAARcSURBVHhe7Z0BctpADEUdDt7QiwWTk9XYH9bdFGqMJK/we/MnSTOZSNZjDYHF7U6nUw9p6fS578/ns76CPBR/kJGLv9vK41yaDtZfbvCXG/zlBn+5wV9u8Jcb/OUGf7nBX27wlxv85QZ/ucFfbvCXG/zlxsvfx+fHrqLDDgd/NtFhh4M/m+iww8GfTXTY4eDPJjrscPBnEx12OPiziQ47HPzZRIcdDv5sosMOB3820WGHs95fdQDkQTQyB/AXEY3MAfxFRCNzAH8R0cgcwF9ENDIH8BcRjcwB/EVEI3MAfxHRyBzAX0Q0Mgfa9nfs6u+YJ6DE3vypQDhVG4ZRAQfwV6jaMIwKOIC/QtWGYVTAgab9nfyvKDQvUbVhGBVwgPVXqNowjAo4gL9C1YZhVMCB9f4On16PvFUgnKoNw6iAA6y/QtWGYVTAgbb8deOaHn75JhdDnHdiGxVwgPVXqNowjAo4sN7f+1EN3TAq4EBb/ra9hmw1dMOogAOsv0I1dMOogAPr/QU8ORJMNXTDqIADrL9CNXTD9P2XaljfR+CvUA3dMCogvvXZgr372+j5azOFrL9CNXSTdMfLRxW4YLn4BvBXmM/dNsMvn1/b3/ChH/4K1dANowIOvJu/anD/j9H+JZX/F9MDzvPsv9Zg/d2lGmtYVD4c/NlE5cPBn01UPhz82UTlw8GfTVQ+HPzZROXDwZ9NVD4c/NlE5cPBn01UPpwW/VWjaSRqrjHwtzRqrjHwtzRqrjHwtzRqrjHwtzRqrjHwtzRqrjHwtzRqrjHwtzRqrjH24m/aR3Tvn3dz7G4/qeYaoxV/p9nGrNv4DtcvTHI4Hi4fZ99ZanHMtu/NuIeXv+rgG4mae5425Q3syN+w8i6dfc02Ei1j3Pr3Pd+A1A6sv9zsxd+PfdATxruh49nz+nskb7zDS2B3R/6GJajmnmTabtvm+x3X+3t8PNXsDLP6j4rDp9eNdUP2fP58B5b6e/bsUQ2ukai5N4L1l5v1/qrRhEXlYQR/ucFfbtb787t+5OPMX6l4ijb/gHuRBOtvuijhNQeVT4L3jSbD+fPvtzirfGLKtXxeh/u/YIyfU03ib7YEVT4trVw/6zbQsHS/Lxsg0j0MGRv+cnoFP9n5s/u1vuG3JNX6G1+DHRTOv9l+ptuc02kj2fpLGo3siqFL/EVEI3MAfxHRyBzAX0Q0MgfwFxGNzAH8RUQjcwB/EdHIHMBfRDQyB/AXEY3MAfxFRCNzAH8R0cgcwF9ENDIH8BcRjcwB/EVEI3MAfxHRyBzAX0Q0MgfwFxGNzIGl/n6+5Fi1SB5EI7uy8eu3U/l0+xi2SqP7J6AF1vibtsI53aDej3FQrewftNz7Da/D+TOYLffPT4uPJfgibbx/ZYC7wP/iPSLOn7nBX27wlxv85QZ/ucFfbvCXG/zlBn+5wV9u8Jcb/OUGf7nBX27wlxv85QZ/ucFfbvCXG/zlBn+5wV9u8Jcb/GWm7/8Ar7zTgpFxHmgAAAAASUVORK5C)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case 3:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAACVCAIAAADewC8YAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQ6SURBVHhe7Z3tbttIEASdvP8rXSTfe+WDChteZQ4XkIueMWdVhUbsXzurrlAyxJX9drvd7tCWN32939/f3/Ud9GH4g448/H1ceTyXtoPrrzf46w3+eoO/3uCvN/jrDf56g7/e4K83x/39q69wJU5df38o5M22K3D2+fPbO9auxMTr37gKcfnpzP/8cnvctPi2fw+fxbw/7vdegdP+dm3bvz/e3shH9nLqmRv8eNrcNv39Pw/jZbP3Us/84PAAXjwqpRz8eaJSysGfJyqlHPx5olLKwZ8nKqUc/HmiUsrBnycqpRz8eaJSysFfRVRZAviriCpLAH8VUWUJ4K8iqiwB/FVElSWAv4qosgTwVxFVlgD+KqLKEphbmvu357K3lsHppRc7P1HzX3CvLoP5pdc7vxRKN0YDEphb+nEEdL3zg6F0YzQggYmllz2/+9T416fvDdGABM4uvfL5+bzXQg1I4PjS22W35udXPl7IQ+nG7OtncMrf4oTSjdGABBKXbkco3RgNSAB/g1C6MRqQAP4GoXRjNCAB/A1C6cZoQAL4G4TSjdGABPA3CKUbowEJ4G8QSjdGAxLA3yCUbowGJHBRf7/fHK8mlG6MBoz3QGzv+1/3+iu7P5X9/tnPL19+L//hzHnT5lL+PvkturXfv16fp8aXvX+0MqF0Y7bFb7d/9ile8DcIpbuyPS3nvZZf0V94/KlxveZp6/9D3r3SV/fnirZeDv480dbLwZ8n2no5+PNEWy8Hf55o6+XgzxNtvRz8eaKtl4M/T7T1cvDnibZeDv480dbLwZ8n2no5+PNEWy8Hf55o6+XgzxNtvRz8eaKtl4M/T7T1cvDnibZeDv480dbLeXV/nJ9Yh6DElZc7v/RZhN6N2Rbn/GA6T41zfncGzs+f5rrXH59fOcJF/fH5sYNc9/qrJ5RujAYkgL9BKN0YDUgAf4NQujEakAD+BqF0YzQgAfwNQunGaEAC+BuE0o3RgATwNwilG6MBCeBvEEo3RgMSOL40v791PhqQwKml/1DI708+nn39DM4uze8vn4kGJDCx9LgK+fsBB6MBCcwvzd/vOB4NSGB+6bL7O2WE0o3RgAROL71r2/4NW2yavNe85+zVZTC39ONpc9tWzYNfIHtrGcwvHbZI/hJVlgD+KqLKEsBfRVRZAviriCpLAH8VUWUJ4K8iqiwB/FVElSWAv4qosgTw54lKKQd/nqiUcvDniUopB3+eqJRy8OeJSikHf56olHLw54lKKQd/nqiUcuYGc/82Zu+lntODFzs/4cpeTj3zg9c7v9SROX+PI6DrnR/syIS/Zc/vduSsv5XPz3fkuL/tslvz8yutOeUPLsfczy9wFfDXG/z1Bn+9wV9v8Ncb/PUGf73BX2/w1xv89QZ/vcFfb/DXG/z1Bn+9wV9v8Ncb/PUGf73BX2/w1xv89QZ/nbnffwEqabORnti9MgAAAABJRU5ErkJg)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case 4:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAACVCAIAAADewC8YAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAASeSURBVHhe7Z2LVuJAEESBH9/XfwnZL9sAZYQOIBmqa+hN3VNHV4+bMn2dgBDiZr/fH0xZNnh/OAzDgH+ZOnz5MxU5+ptWno+l5fD6q4391cb+amN/tbG/2thfbeyvNvZXG/urTQd/tx5o/cD7THr1ptJ3/fUaX3ltEz5+1qa/v/3QZzX06uXS0d9fvFfTqzeFXv6ufvYH3Q1Sr94sOvgb9oft5udlNturD18JOm7RqzeVPuvvtM8/LvefFRTc4fQ1HXrz6OgvJSi4Q/hiYlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyOnmb7P8edTd9lf4zDwouEP4YmJQIKeDv+HwEXaeGHTcIXwxMSiQk+Uv7N53ebAWf4fPDC+8Rj9sihgUyOnoL4p5IkfNKGjiemvMoEBOB3+76w+XngSGgibCpohBgZw3OX4uyLjx5uuchE0RgwI57+8PN43TqkVBE+ctZAQFcnocP7e/zjIuDqTf3n/BjeV4sB0Xn9ffRMnjZzNhU8SgQI79cYICOfbHCQrk2B8nKJBjf5ygQI79cYICOfbHCQrk2B8nKJDzvD+8bHx/uojK+PbxL9Fh914I7ff38X/NHmtteAz9dtBxi+O3+zm0zzHSXoP//uuP//jZ7kvbg8d9lgUFckoeP9vW30jYFDEokLPAX3ji9HxMuEfYPWJQ0ETYFDEouMV8UI9Ht4i29ff9ZTfC7pFCef6Wdsy8DApmXFx0LeVaJYvvvzxJ2L0XEu9iNJ8/cbp+SNia4v7Liavp7d/h/suGt/MP0nCa2vNJ3fiUcVAY2SfNt99zWvydjwnhuxRkt/0TPtMUxY9dyDQ0Ou3rL3yLzoNgZAnYnyIYWQL2pwhGloD9KYKRJWB/imBkCdifIhhZAvanCEaWgP0pgpElYH+KYGQJ2J8iGFkC9qcIRpaA/SmCkSVgf4pgZAnYnyIYWQL2pwhGloD9KYKRJdDir9fzt6T4+dsTmvMnUrOq8ydop9z0Yv73j1Z7/lLVP9t1mvVKzx9cdv7uexKGTgwKnqP7+btHiAdxGWHoxKBATru/ipxnvc7Xr+Am97z2x7fl1t/4Dfv1Y7UJQycGBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYEc++MEBXLsjxMUyLE/TlAgx/44QYGcFfqTXr8gmxX5m18/ZPZy3PagQ8661l+4iMdQ9kIoE2vzN0J77fk7sK7j5yXEi7B0ZIXr779inf7K3+xNrOn4eeMKjr7/Yrpif7Wxv9rYX23srzb2Vxv7q4391cb+amN/tbG/2thfbeyvNvZXG/urjf3Vxv5qY3+1sb/a2F9t7K829lcb+6uN/VXmcPgHGiz3TvEL/5sAAAAASUVORK5C)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case 5:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAACVCAIAAADewC8YAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAQKSURBVHhe7Z3RctMwFEQdhg8vfBhJ+mUk8dYOYii2evfWVz1ndsBPyOyxHNVRk+l8Pl+gLJP+vlyu16uOoA6rP6jI3d8y87iXloP5Vxv81QZ/tcFfbfBXG/zVBn+1wV9t8Febrf6uPJmJYK4xsMx98+/5ARvPuzeyFPV28OvxZwzcP2uz3d/rfPkw7bpxFNgz/87rCUTeCsbmqbRIdq1fXudj2EuzYPmc9Usz8X9Mpx+nb+T/mU6q7MGjxrD7Vt/65T58e5bk31lKC3/F6fN3pzlF8k5UmQH8ZUSVGcBfRlSZAfxlRJUZwF9GVJkB/GVElRnAX0ZUmQH8ZUSVGcBfRlSZAfxlRJUZwF9GVJkB/GVElRnAX0ZUmQH8ZUSVGcBfRlSZAfxlRJUZwF9GHoXx/m3RHG//xJ32LOOiAQbiEPuXGprSA6MBxuKT9w/+TVN6VH5Od39DfhLGUfbvzjS9R+VlOsX+D8fmoPMv8BXi01kux7eDyCXoYfxN35djDTAi83XJ+gUE/mqDv9rgrzb4qw3+aoO/2uCvNofx98fP7/yi9lYON//Ge35m5Yj3T55fb+co/m7Tbjm4/eN8kvpGWL/UBn+1OaK/ilEp6eAvJiolHfzFRKWkg7+YqJR08BcTlZIO/mKiUtLBX0xUSjr4i4lKSQd/MVEp6eAvJiolHfxlRJUZwF9GVJkB/GVElRnAX0ZUmQH8ZUSVGcBfRlSZAfxlRJUZwF9GVJmBPn/33yBtTpG8k7k1Bzv8Ndv6Bvz+nKc9xLFRZQa2+vsKG2qb0gOjAQz03D9H/f64pvTAaAAD2/2N/P2N83bhZQ9xeOZRHPStXwbkdl2+2F7RNYaBfn8jTcT51X3k+cf65SPRAAa4f640pQdGAxjA30pTemA0gAH8rTSlB0YDGMDfSlN6YDSAAfytNKUHRgMYwN9KU3pgNIAB/K00pQdGAxjA30pTemA0gIGt/vj5/SPRAAb2zb/nj4Xg+dn2PAaxwP1T3C7HpvTAaAwD2/19ofePwifiPIqDnvnH+7d7owEM7Fq/DP6xck3pgdEABnbMv+bOyf6l7VFlBvrWL+wf3Je5NQd9/u40p0jeiSozgL+MqDID+MuIKjOAv4yoMgP4y4gqM4C/jKgyA/jLiCozgL+MqDID+IuJSkkHfzFRKengLyYqJR38xUSlpIO/mKiUdPAXE5WSDv5iolLSwV9MVEo6ff54/7bN3Es+O/yNv3/iA1Ep6Wz19xX2X1ek5/456v7Bimz3N/L+3br0rV/gKPT7YyIeAdYvteH+WRv81QZ/tcFfbfBXG/zVBn+1wV9t8Fcb/NUGf7XBX23wVxv81QZ/tcFfbfBXG/zVBn+1wV9t8Fcb/NUGf7XBX2Uul9+Qf7xm+zh1PQAAAABJRU5ErkJg)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case 6:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAACWCAIAAABYVF22AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAM5SURBVHhe7ZxBThtAEAT9c/DLjH8WIrVYsofIoJ72NlSpDxaXmenSciCEy9sn7ve7PkEJl9vtpo9QyHp/PL5G/vn+CXX89ffx8vheWgfvrxv8dYO/bvDXDf66wV83+OsGf93grxv8dYO/bvDXDf66wV83+Otmyt/l9fqrorPj4M8TnR0Hf57o7Dj480Rnx8GfJzo7Dv480dlx8OeJzo6DP090dhz8eaKz4+DPE50d5/v+tgN+eVRKHPx5olLi4M8TlRIHf56olDj480SlxMGfJyolDv48USlx8OeJSomDP09USpwj/b287l85Piolzon+NAAeAH/dHOPvuj5oADwA76+b8/xdX+73+42/BfUYvL9u8NcN/rrBXzf46wZ/3eCvG/x1g79u8NfNef74+dlX4P11c+D7w98X4P11g79uTvTH7y89zpH+CqNS4uDPE5USB3+eqJQ4+PNEpcTBnycqJQ7+PFEpcfDniUqJgz9PVEoc/HmiUuLgLxFVNgD+ElFlA+AvEVU2AP4SUWUD4C8RVTYA/hJRZQPgLxFVNgD+ElFlA+AvEVU2wJH+nvL7E5NDVdkAJ/rTgDjbGsZowAD4W2xrGKMBAxzj74C///J5B30wRQMG4P0ttjWM0YABzvP3jP+/8j7ufej76H0ZUzRmAN7fYlvDGA0YAH+LbQ1jNGAA/C22NYzRgAHwt9jWMEYDBsDfYlvDGA0YAH+LbQ1jNGAA/C22NYzRgAHwt9jWMEYDBsDfYlvDGA0YAH+LbQ1jNGCA8/zx87OvwPtbbGsYowEDHPj+nufP/c9GH9GAAXh/i20NYzRgAPwttjWM0YABTvTH7y89zpH+flxU2QD4S0SVDYC/RFTZAPhLRJUNgL9EVNkA+EtElQ2Av0RU2QD4S0SVDYC/RFTZAN/393+2A358dHYc/Hmis+PgzxOdHQd/nujsOPjzRGfHwZ8nOjsO/jzR2XHw54nOjoM/T3R2HPx5orPjTPmDDPjrBn/d4K8b/HWDv27w1w3+usFfN/jrBn/d4K8b/HWDv27w1w3+usFfN/jrBn/d4K8b/HWDv27w1w3+usFfN/jrBn/d4K8b/HWDv2be3v4A83ttHHUNilkAAAAASUVORK5C)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case 7:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJUAAACVCAIAAADewC8YAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAM4SURBVHhe7d1RTpxHFERh2P+igJ1F0Ry5kZxYDem66WLO92Kepkb3+MeSGdkvb29v76r1wq/v7x8fH3ylHqufGv3d79eT5/fSOj5/3ezXzX7d7NfNft3s181+3ezXzX7d7NfNfhNyPxuwXzf7dbNft6/182e8t/nO8/eo+KJtj7slfP+leWvawMkC7DeBkwXYbwInC7DfBE4WYL8JnCzAfhM4WYD9JnCyAPtN4GQB9pvAyQLsN4GTBdhvAicLsN8EThZgvwmcLMB+EzhZgP0mcLIA+03gZAH2m8DJAuw3gZMFfOel/fzEVz3ulvC1l/7Zn1/i2AEMBARfug7HDmAgwH4Lxw5gIODZ+33+E4FjBzAQ4PO3cOwABgLst3DsAAYC7Ldw7AAGAuy3cOwABgLst3DsAAYC7Ldw7AAGAuy3cOwABgLst3DsAAYC7Ldw7AAGAuy3cOwABgLst3DsAAYC7Ldw7AAGAp69n39//XNw7AAGAp6r3+en7ffPEnDsgNznFnz+Fo4dwEDgf2h4rn6cM4CBf+HzdwbHDmBgnP3OYGCc/c5gYJz9zmBgnP3OYGCc/c5gYJz9zmBgnP3OYGCc/c5gYJz9zmBgnP3OYGCc/c5gYJz9zmBgnP3OYGCc/c5gYJz9zmBgnP3OYGCc/c5gYJz9zmBg3E/rxzkPeX195av/r9Cf2W9X7jNI/4X9djFwGfvtYuAy9tvFwGXst4uBy9hvFwOXsd8uBi5jv10MXMZ+uxi4jP12MXAZ++1i4DL228XAZey3i4HL2G8XA5ex3y4GLvPs/T7/hO/PGLiMz98uBi5jv10MXKaj3/7Pvjl2AAOXaXr+HhU5Z8BjpUvfm+bYAQxUsd/CQBX7LQxUsd/CQBX7LQxUsd/CQBX7LQxUsd/CQBX7LQxUsd/CQBX7LQxUsd/CQBX7LQxUsd/CQBX7LQxUsd/CQBX7LQxUsd/CQJWmN+3nJ37X8abv/Lc7blD5m06/2K/bs/f7x+/Mx/+Xvhyfv27262a/bvbrZr9u9utmv27262a/bvbrZr9u9utmv27262a/bvbrZr9u9utmv27262a/bvbrZr9u9utmv272a/b+/hf6Ln2Y9lS2dwAAAABJRU5ErkJg)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case 8:
+			myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAIAAACzY+a1AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAPDSURBVHhe7dxhTttQEEXh7pzuDNhZqXyw/IiocJk78ZDzSZXgD+N5B4cojfLr9fX15eDDt7q+X2//np+ft2800d+EO2/BiZaEmoiE+/3ng+o43oXjmXA8E45nwvFMOJ4JxzPheCYcz4TjmXA8E45nwvFMOJ4JxzPheMGEvx8Ma7czYRnWbmfCMqzdzoRlWLudCcuwdjsTlmHtdiYsw9rtTFiGtduZsAxrtzNhGdZu962EXLu+gCMLMGETjizAhE04sgATNuHIAkzYhCMLMGETjizAhE04sgATNuHIAkzYhCMLMGETjizgogkZ0I7xAQwIMOGC8QEMCLhQwqenp/0LBrQ7XsP2RRUGBHgXLhgfwICAKybc7sLmT8DZxpXffLttSoJ34YLxAQwIMOGC8QEMCDDhgvEBDAgw4YLxAQwIMOGC8QEMCDDhgvEBDAgw4YLxAQwIMOGC8QEMCDDhgvEBDAg4kXD75ODj53dzdQEMaMf4AAa8K/wY9BMJb1/x4uqq/eAX2BIfoO0D6YLxAQwIuGLC7S68iwd6mXt7HODqArYp/Rgf8PbDQ38aTj+dOeLqAhjQjvEBH07vPk9nzuLaHwZrt/vPhF/5JWKzh8Hanyu88468C8uwdjsTlmHtdiYsw9rtTFiGtduZsAxrtzNhGdZuZ8IyrN3OhGVYu50Jy7B2OxOWYe12JizD2u1MWIa125mwDGu3M2EZ1m5nwjKs3c6EZVi7nQnLsPbn/C/fq2PtdicS3v4Sce0BDGjH+AAGvLv/2598E+JZbz/8/m9CvMXVFdnfhnuFtwKXvyeYAQEXSnjEgHaMD2BAwImEt48DXF217S4MPex8ZhtXfvPttin7n8DC7U4/nTn+HebqAhjQjvEBDHh3/6czG64ugAHtGB/AgAATLhgfwIAAEy4YH8CAABMuGB/AgAATLhgfwIAAEy4YH8CAABMuGB/AgAATLhgfwIAAEy4YH8CAgCsm/MEvsCV4Fy4YH8CAgOvehXfhXViGAe0YH8CAABMuGB/AgICLJvx5OLIAEzbhyAJM2IQjCzBhE44swIRNOLIAEzbhyAJM2IQjCzBhE44swIRNOLIAEzbhyAK+lfDfuPaHwdrtTFiGtduZsAxrtzNhGdZuZ8IyrN3OhGVYu50Jy7B2OxOWYe12JizD2u1MWIa12wUTqocJxzPheCYcz4TjmXA8E45nwvFMOJ4JxzPheCYcz4TjmXA8E45nwvFMOJ4JxzPheCYcz4TjmXA8E45nwvFMOJ4JxzPheCYcz4TjmXC4l5c/aeSHDB84V2cAAAAASUVORK5C)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		case -1: // to be changed
+			if(opt == 1)
+				myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACVCAIAAAA195QbAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAOTSURBVHhe7dxtThtBEAZhuP+hMCdLiFVCRKKNxszb3l7X8yNBSsvMdGUjha+Xy+Xy9vb28auG+pfw0/v7O29pjv8SaiISfj5//qM6jk/heM+b8DT/3vgUjmfC8Uw43gkTvtzE0ImYcDwTjve8CU/z0USfwvFMOJ4JxzPheCYcz4TjmXA8E45nwvFMOJ4JxzPheCYcz4TjmXA8E44XvBI7KzBUYOhgOFyBoQJDASZcwOEKDBUYCjDhAg5XYKjAUIAJF3C4AkMFhgJMuIDDFRgqMBRgwgUcrsBQgaEAEy7gcAWGCgwFmHABhyswVGAowIQLOFyBoQJDASZcwOEKDBUYCgi+9G3c7ES4WDsTbsPF2plwGy7W7ugJX19feevwuFg7n8JtuFgh971wJtyGi7Uz4TZc7Cfbf96NCbfhYu1MuA0Xa2fCbbhYu+A75mZ3+fMLvMTBsJQAEzZhKQEmbMJSAh6f8NuPv1DjLrzEwbCUwP/xfQqbsJQAEzZhKQEmbMJSAkzYhKUEmLAJSwkwYROWEmDCJiwlwIRNWEqACZuwlAATNmEpASZswlICTNiEpQSYsAlLCTBhE5YSYMImLCXAhE1YSsAPL83710MRo2DCAYhRMOEAxCiYcABiFEw4ADEKJhyAGAUTDkCMggkHIEbBhAMQo2DCAYhR+OGPf4P3r6uR32vP2XX1NeHenCZswlICvnnpb7+f/46/OJxdVywlwKewCUsJMGETlhJgwiYsJcCETVhKgAmbsJQAEzZhKQEmbMJSAkzYhKUEmLAJSwkwYROWEmDCJiwlwIRNWEqACZuwlAATNmEpASZs4mftx2Mp/nj1I+NihZFP4W3c+0S4WDsTbsPF2plwGy7WzoTbcLF2JtyGi7Uz4TZcrJ0Jt+Fi7Uy4DRdrZ8JtuFi74DvmZgWGCgwdDIcrMFRgKMCECzhcgaECQwEmXMDhCgwVGAow4QIOV2CowFCACRdwuAJDBYYCTLiAwxUYKjAUYMIFHK7AUIGhABMu4HAFhgoMBZhwAYcrMFRgKMCECzhcgaECQwHBl34UdlbIfQ3Lozx1wnPkfLqEDJ3Iga7U8/NuGDqRh10p+HWVNzHULnhffj8RWhUYOhETjmfC8Uw4ngnHM+F4JhzPhOOZcDwTjmfC8Uw4ngnHe7qE5/g071fP+xRu//kvj3LChLf5FOpwTDieCccz4XgmHM+E45lwPBOOZ8LhLpe/693xh30UMZQAAAAASUVORK5C)";
+			else if (opt == 2)
+				myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJcAAACWCAIAAABcoY2LAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAR/SURBVHhe7Z0BUttKEAUjc/87+WLEEbKLiDYevPjtaDV6XV2fJH+T0k5HCyFG+fP3j9235/P5+q3T+kftvvysaHcsK75PX75rd+H9veijdX/6RK2gK1bQFSvoihV0xQrWrBiDxQV0xQq6YgVdsYKuWEFXrKArVtAVK+iKFXTFCrpiBV2xgq5YQVesoCtW0BUr6IoVdMUKumIFXbGCfSvGYDEcE1wkjMFioa7YBi4SxmCxUFdsAxcJY7BYqCu2gYuEMVgs1BXbwEXCGCwW6opt4CJhDBYLdcU2cJEwBouFumIbuEgYg8VCh6j47ZehD8U0Tddv4CJhzHXN+2q9St+LbVzC5x7EYLHQvhVj64ENprlxxds5tQem6W15s3znAdjgvT2O01nfi09yur0NO2KDn/Z+/sw2Fa+7WvF/RncE/yuPJ8+M9R4zHeZeHPRsnX8PNfw2wgbTHPJEHaho20mADQZepgk/8op+v6gEG0zTFZVgg2mOVHHQd40NYINp+l5Ugg2m2bfiK1xe4PZLDAaGI9QV88BwhA5S8ZsP6G9BfsXtlxgMDEeo78U8MByhrpgHhiPUFfPAcIS6Yh4YjlBXzAPDEeqKeWA4Ql0xDwxHqCvmgeEIdcU8MByhrpgHhiPUFfPAcIS6Yh4YjlBXzAPDEeqKeWA4Ql0xDwxHqCvmgeEIdcU8MByhP1c0I4Ao0BX3AaJAV9wHiAJdcR8gCnTFfYAo0BX3AaJAV9wHiAJdcR8gCnTFbD4fnfMMTz5nxxWTaIp3T/y1xz9XfEWzBsMR6op5LDM5refznB8/5X2KnpXjihmclq+TxnCEumIe68lon2Pkinl8HU50tC6HZ8PZ64pJzEcqhhN6wntBf4w6ChiOUFfMA8MR6op5YDhCXTEPDEeoK+aB4Qh1xTwwHKGumAeGI9QV88BwhA5VcYiHS3cCf+pv/exM7DYVv/vLttIJl/1+HY4s4ez29+J9z5I0fgauzY3uxdvbo3DdL4YjdLt7cdnZ7Z8aOQbzQC7T23o+Kof66KY4GI7QvhUDLxVPVexxrfafXoCbVZxd8+JLxAYBG0xzlIo1wAbTdEUl2GCarqgEG0zTFZVgg2m6ohJsME1XVIINpumKSrDBNF1RCTaYZt+KMVgMxwQXCWOwWKgrtoGLhDFYLNQV28BFwhgsFuqKbeAiYQwWC3XFNnCRMAaLhbpiG7hIGIPFQl2xDVwkjMFioa7YBi4SxmCx0O0rPnroQG+a/l76czEuEsZc1wQPWfi1h7sXX3xRQfzCixgsFtq34lbGYHEBN67Y43iZjVnW/OKl2R8/JX7uzI922u82FbXPCbn3Eb2fO/PI3vs9+onae745+v1idLQuB6Dyy2I6OUpF7YtuA+YjFYtD254787za/fperKArVtAVK+iKFXTFCrpiBV2xgq5YwcNVxJ/69/LZmdhjVez93JmtPPq9WMOD3YvLf7G4gAf96KbTc2e28qAVi1mzYmDX585s5eEqltQVK+iKFXTFCrpiBV2xgq5YQVesoCtW8Hw+/wOGjdB0owgk3wAAAABJRU5ErkJg)";
+			myButton.style.backgroundSize = "100% 100%";
+		break;
+		}
+	}
+	function buttonClickGen(){
+		buttonObj = event.target;
+		if(questionDown == 1){
+			if(buttonObj.isMineDown  == 1)
+				return;
+			if(buttonObj.isQuestionDown == 1){
+				buttonObj.isQuestionDown =0;
+				displayMine(buttonObj,102);
+				return;
+			}
+			else {
+				buttonObj.isQuestionDown =1;
+				displayMine(buttonObj,201);
+				return;
+			}
+			/*if(minePicked < mineCnt){
+				buttonObj.isQuestionDown = 1;
+				displayMine(buttonObj,100);
+				minePicked += 1;
+				mineDisp.innerHTML = ("000"+(mineCnt -minePicked)).slice(-3);
+			}
+			else {
+				questionDown =0;
+				markBox.style.backgroundImage = "url('question.png')";
+				return;
+			}*/
+		}
+		/*else {
+			displayMine(buttonObj,102);
+			return;
+		}*/
+		if(mineDown == 1){
+			if(buttonObj.isQuestionDown == 1)
+				return;
+			if(buttonObj.isMineDown == 1){
+				buttonObj.isMineDown =0;
+				displayMine(buttonObj,102);
+				minePicked -= 1;
+				mineDisp.innerHTML = ("000"+(mineCnt -minePicked)).slice(-3);
+				return;
+				}
+			else if(minePicked < mineCnt){
+				buttonObj.isMineDown =1;
+				displayMine(buttonObj,100);
+				minePicked += 1;
+				mineDisp.innerHTML = ("000"+(mineCnt -minePicked)).slice(-3);
+				return;
+				}
+			else 
+				return;
+		}
+		
+		/*if( mineDown ==1){
+			if(buttonObj.isQuestionDown == 1){
+				buttonObj.isQuestionDown = 0;
+				displayMine(buttonObj,102);
+				minePicked -= 1;
+				mineDisp.innerHTML = ("000"+(mineCnt -minePicked)).slice(-3);
+				return;
+			}
+			else{
+				mineDown =0;
+				displayMine(mineBox,100);
+			}
+		}*/
+		if(buttonObj.isQuestionDown == 1 || buttonObj.isMineDown == 1)
+			return;
+			
+		/*if(event.ctrlKey){
+			if(buttonObj.isColorSet == 0){
+				buttonObj.isColorSet = 1;
+				//buttonObj.style.backgroundColor = "rgb(255,255,0)";
+				displayMine(buttonObj,100);
+				
+			}
+			else if (buttonObj.isColorSet == 1){
+				buttonObj.isColorSet = 2;
+				//buttonObj.style.backgroundColor = "rgb(255,0,0)";				
+				displayMine(buttonObj,101);
+			}
+			else{
+				buttonObj.isColorSet = 0;
+				//buttonObj.style.backgroundColor = null;
+				displayMine(buttonObj,102);
+			}
+			return;
+		}*/
+		buttonObj.disabled = true;
+		if(buttonObj.isColorSet == 0){
+		buttonObj.disabled = true;
+		if(buttonObj.hiddenText == "*"){
+			//if(buttonObj.isColorSet == 0){
+				for(var i =0; i < cells.length ; i ++){
+					if( cells[i].hiddenText == "*")
+						//cells[i].style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAALoSURBVDhPjZJNSxtRFIbPhJjECaKNAYOgLkKyFnTjwq3/QBeKuPAf5Ee4Cq2tVgq1Biqo1BarFBdFumisFWKrpGqMbTE6MZPvTGbGyZdl+s5MEkILpS+He8+5933ux9whWZalhsT/UN0qSQAJXX1YV/Gfqpt0ASR0GBVahLJQKNQLXSj/9gCkphWtIYzIilK6v6+oKgIJSsNmqMkTirwuY/SuXP6lqolY7HhnJ7iwgPi6vX0bi92rqlwqwWD4tTUKBTJICCsptRp3cbExPT3vdM7bbPNEj4kWWfapy7U5O8tFo0q1Cpvh1+BcLmdkNVUN7+35nc4nRM8Y5jnRS4ZZY5hXJtMbi2XNYln2eE6DwaqqwmzwlM1m0eG0P46OHjocSybTssm0SvSaaJfoA9EBUYhhQu3tn7q7t4aGriIRnB8IQA3GXUVZ3picXGSYF21t60TvdOwz0ReiU6JLomuGiTkcZ17vwdycoCg4ah0uSlI8Gn3U07NitW6azXs6dkwUJvpGdEH0kyhFVGDZosdzPjOT4Xk8SQOW5djJid9sXrfb35vNIZ1BAEac6TvzREWrteR2J8bHcxxXEMVMJkPpdBoZd36OT7rd2RmyWL4TISKNJZCgTAK22Speb8bnw3XzgqDBqVQKF0gnk6tjY7sPHpx2dHBENzqAAyOQXBNliaSururgYGplJa8oeCOAlEwmsblUqYS2tt4ODFy6XCmWhfVWZxBIUIosW+nvF6emeI4TRBEIQOJ5Hh1uLlWrH5eWQsPDmd5eyW4XzOYcwyCQSCxb7usrTkzEw2GhVIIZCEBKJBLoII2v1SLB4JnPlxsZuXO7Sw6HgnC7pdHRlN/P39wI5TKuavghbedbXUhS6XReFHN4uaur6/39ZCDABwLxw0Ptu9zd5YpFJK1+bWdD8XgcrfYJMpks/kBZFioVBBL8gxjEFAzAmq0GA4NQt7YYb6p1yhByqA4bE1xDuqFe/pEbTiiRSPwGUQZfnaFultQAAAAASUVORK5C)";
+						//cells[i].innerText = "*";
+						displayMine(cells[i],1);
+					else if (cells[i].nearbyMine > 0)
+						//cells[i].innerText = cells[i].nearbyMine;
+						displayMine(cells[i]);
+					else
+						//cells[i].style.backgroundColor = "rgb(37,113,190)";
+						displayMine(cells[i],0);
+					cells[i].disabled = true;
+				}
+				displayMine(buttonObj,2);
+				refreshButton.style.backgroundImage = "url('loser.png')"
+				clearInterval(timeRet); 
+				//alert("Game Over");
+		//}
+
+		}
+		else {
+			if(buttonObj.nearbyMine > 0){	
+				//buttonObj.innerText = buttonObj.nearbyMine;
+				displayMine(buttonObj);
+				buttonObj.isProcessed = true;
+			}
+			else{
+				findEmptyAdjacentCells(buttonObj);
+				for(var i =0; i < emptyCells.length; i ++){
+				if(!(emptyCells[i].isQuestionDown == 1 || emptyCells[i].isMineDown == 1)){
+					if(emptyCells[i].nearbyMine == 0){
+						//emptyCells[i].style.backgroundColor = "rgb(192,192,192)";
+						//emptyCells[i].disabled = true;
+						displayMine(emptyCells[i],0);
+						emptyCells[i].disabled = true;
+					}
+					else if(emptyCells[i].nearbyMine > 0){
+						//emptyCells[i].innerText = emptyCells[i].nearbyMine;
+						displayMine(emptyCells[i]);
+						emptyCells[i].disabled = true;
+					}
+					}
+				}
+			//	buttonObj.innerText = "0";
+			}
+			setTimeout(checkWin,10);
+		}
+		}
+	}
+	function checkEmpty(buttonObj){
+		if(buttonObj.nearbyMine == 0 ){
+			if(buttonObj.isProcessed == false){
+				buttonObj.isProcessed = true;
+				emptyCells[emptyCelIter++] = buttonObj;
+				findEmptyAdjacentCells(buttonObj);
+			}
+		}
+		else if(buttonObj.nearbyMine > 0){
+			buttonObj.isProcessed = true;
+			emptyCells[emptyCelIter++] = buttonObj;
+		}
+	}
+	
+	function findEmptyAdjacentCells(buttonObj){
+		if(buttonObj.nearbyMine == 0 ){
+			if(buttonObj.isProcessed == false){
+				buttonObj.isProcessed = true;
+				emptyCells[emptyCelIter++] = buttonObj;
+			}
+		}
+		else
+			return;
+		if(buttonObj.i-1 >= 0){
+			checkEmpty(cells[(buttonObj.i-1)*colCnt + buttonObj.j]);
+		}
+		if(buttonObj.i+1 < rowCnt){
+			checkEmpty(cells[(buttonObj.i+1)*colCnt + buttonObj.j]);
+		}
+		if(buttonObj.j-1 >= 0){
+			checkEmpty(cells[buttonObj.i*colCnt + buttonObj.j-1]);
+		}
+		if(buttonObj.j+1 < colCnt){
+			checkEmpty(cells[buttonObj.i*colCnt + buttonObj.j+1]);
+		}
+	}
+	/*function findEmptyAdjacentCells(buttonObj){
+		for(var ik = buttonObj.i-1; ik< buttonObj.i+2; ik++){
+			for(var jk = buttonObj.j-1; jk<buttonObj.j+2; jk++){
+				if(ik >= 0 && ik < rowCnt && jk >=0 && jk <colCnt)
+					if(cells[ik*colCnt + jk].nearbyMine == 0 ){
+					if(cells[ik*colCnt + jk].isProcessed == false){
+							cells[ik*colCnt + jk].isProcessed = true;
+							emptyCells[emptyCelIter++] = cells[ik*colCnt + jk];
+							findEmptyAdjacentCells(cells[ik*colCnt + jk]);
+						}
+					}
+			}
+		}
+		return;
+	}*/
+	/*function buttonHoldGen(){
+		alert("check");
+	}*/
+	function onRefershClick(){
+		emptyCelIter =0;
+		while(cells.length > 0) {
+			cells.pop();
+		}
+		while(emptyCells.length > 0) {
+			emptyCells.pop();
+		}
+		//cells.clear();
+		//emptyCells.clear();
+		//dynTable.innerHTML = "";
+		for(var i = dynTable. rows. length - 1; i > 0; i--)
+		{
+			dynTable. deleteRow(i);
+		}
+		refreshButton.style.backgroundImage = "url('gameStart.png')"
+		second.innerHTML = "00:00:00"
+		loadGame();
+	}
+	function onMarkCell(){
+		if(questionDown == 0){
+			questionDown =1;
+			markBox.style.backgroundImage = "url('question_down.png')";
+			mineDown =0;
+		displayMine(mineBox,100);
+		}
+		else {
+			questionDown =0;
+			markBox.style.backgroundImage = "url('question.png')";
+		}
+	}
+	function onMineReomve(){
+	if(mineDown == 0){
+		mineDown =1;
+		displayMine(mineBox,101);
+		questionDown =0;
+		markBox.style.backgroundImage = "url('question.png')";
+	}
+	else{
+		mineDown =0;
+		displayMine(mineBox,100);
+	}
+		
+	}
+	function loadGame(){
+		var randomNos = [];
+		var iterRan = 0;
+		var ranCount = 0;
+		var totalBox = rowCnt*colCnt;
+		mineCnt = Math.floor(totalBox*complexity);
+		mineDown =0;
+		questionDown = 0;
+		minePicked = 0;
+		markBox.style.backgroundImage = "url('question.png')";
+		displayMine(mineBox,100);
+		
+		
+		deadline = new Date().getTime(); 
+		timeRet = setInterval(runTime,1000);
+		mineDisp.innerHTML = ("000"+mineCnt).slice(-3);
+		for (iterRan =0; iterRan < mineCnt ; iterRan++){
+			randNum = Math.floor(Math.random() * totalBox);
+			while((isRanAvbl(randomNos,randNum) == true)  /*&& nearByMineCnt(randomNos,rowCnt,colCnt, Math.floor(randNum/colCnt) , randNum%colCnt) > 3*/ )			
+				randNum = Math.floor(Math.random() * totalBox);
+			randomNos[ranCount++] = randNum;
+		}
+		var count = 0;
+		for (var i =0; i <rowCnt; i++){
+			var myRow = dynTable.insertRow(-1);
+			for (var j = 0; j < colCnt; j++){
+				var myCell =  myRow.insertCell(j);
+				/**/var myButton = cells[count ++] = document.createElement("button");
+				myCell.style =  "margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px; padding-top: 0px; padding-bottom: 0px;  border-collapse:collapse; border: 1px solid grey";
+				myButton.style = "width: 20px; height: 20px; margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px;";
+				myButton.style.marginLeft = "0pt";
+				myButton.style.marginRight = "0pt";
+				myButton.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ8AAACqCAIAAAA8zgqpAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAANSSURBVHhe7dkxbl43FAZR7fyXVqbsLA6CsSs+C1+MABpiTkE2xG0Gt+Lb35H761l19Sh5Ul09Sp5UV4+SJ9XVo+RJdfUoeVJdPUqeVFePkifV1aPkSXX1KHlSXQFaPfj41/tJdQXI+ICSJ9UVIOMDSp5UV4CMDyh5Ul0BMj6g5El1Bcj4gJIn1RUg4wNKnlRXgIwPKHlSXQEyPqDkSXUFyPiAkid/VJfx+Z/R6qfX6/Xr/L3qCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTaVVeAVrvqCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTaVVeAVrvqCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTaVVeAVrvqCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTaVVeAVrvqCtBqV10BWu2qK0CrXXUFaLWrrgCtdtUVoNWuugK02lVXgFa76grQalddAVrtqitAq111BWi1q64ArXbVFaDVrroCtNpVV4BWu+oK0GpXXQFa7aorQKtddQVotauuAK121RWg1a66ArTafVGX8Q+Yke+qujer7s2qe7Pq3uw/1v38/PznfL1ejMm31O7e7I/qtrvfXLt7s+re7I1QD3gVpy/qfnx88DBC7e7Nqnuz6t6sujer7s2qe7Pq3qy6N3vjzo2qe7Pq3qy6N6vuzap7s+rerLo3+7puH/he7e693t9/AKwTJ924A8g7AAAAAElFTkSuQmCC)";
+				myButton.style.backgroundSize = "100% 100%";
+				myButton.style.borderLeftWidth = 0;
+				myButton.style.borderRightWidth = 0;
+				myButton.style.borderTopWidth = 0;
+				myButton.style.borderBottomWidth = 0;
+				/**/
+				myButton.isColorSet = 0;
+				myButton.isQuestionDown = 0;
+				myButton.isMineDown = 0;
+				
+				myButton.i = i;
+				myButton.j = j;
+				myButton.isProcessed = false;
+				
+				myButton.addEventListener("click", buttonClickGen);
+				//myButton.addEventListener("ontaphold", buttonHoldGen);
+				myCell.appendChild(myButton);
+				
+				/*myCell.style = "width: 20px; height: 20px;"// margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px;";
+				myCell.style.marginLeft = "0pt";
+				myCell.style.marginRight = "0pt";
+				myCell.style.borderLeftWidth = 0;
+				myCell.style.borderRightWidth = 0;
+				myCell.style.borderTopWidth = 0;
+				myCell.style.borderBottomWidth = 0;
+				myCell.isColorSet = 0;
+				
+				myCell.i = i;
+				myCell.j = j;
+				myCell.isProcessed = false;
+				
+				myCell.addEventListener("click", buttonClickGen);
+				cells[count ++] = myCell;*/
+			}
+		}
+		myRow = dynTable.insertRow(0);
+		var myCell =  myRow.insertCell(0);
+		myCell.colSpan = colCnt;
+		myCell.innerText = "";
+		
+		/*for(i =0; i < ranCount ; i++){
+			cells[randomNos[i]].innerText = "*";
+		}*/
+		
+		//var nearbyMine = [];
+		var totCnt =0;
+		for(i =0; i < totalBox; i++)
+			cells[i].nearbyMine = 0;
+		for(i = 0; i < rowCnt; i++){
+			for(var j =0; j <colCnt; j++){	
+				var curr = i*colCnt +j;
+				if(isRanAvbl(randomNos, curr) == false ){
+					cells[curr].nearbyMine = nearByMineCnt (randomNos,rowCnt,colCnt, i , j);
+					/*for(var ik = i-1; ik< i+2; ik++){
+						for(var jk = j-1; jk<j+2; jk++){
+								if(ik >= 0 && ik < rowCnt && jk >=0 && jk <colCnt)
+									if(isRanAvbl(randomNos, ik*colCnt + jk) == true )
+										nearbyMine[curr ] += 1;
+						}
+					}*/
+				}
+				else
+					cells[curr].nearbyMine = -1;
+			}
+		}
+		
+		for(i =0; i < totalBox ; i++){
+			if(isRanAvbl(randomNos,i)){
+				cells[i].hiddenText = "*";
+			}
+			else{
+				if(cells[i].nearbyMine > 0)
+					cells[i].hiddenText = cells[i].nearbyMine;
+				//else
+				//	cells[i].disabled = true;
+			}
+		}
+	}
+	function initLoad()
+	{
+		refreshButton.style.backgroundSize = "100% 100%";
+		refreshButton.style.borderLeftWidth = 0;
+		refreshButton.style.borderRightWidth = 0;
+		refreshButton.style.borderTopWidth = 0;
+		refreshButton.style.borderBottomWidth = 0;
+		displayMine(mineBox,100);
+		loadGame();
+		
+	}
+
+</script>       
+</head>
+<body onload="initLoad()">
+        
+    <div align="center">
+			<br>
+		<h2>Minesweeper</h2> <br>
+		<table style="border:8px solid #CFCFCF;border-spacing:0; padding-left: 0px; padding-right: 0px;margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;">
+			<tr style="border:4px solid #CFCFCF; padding-left: 0px; padding-right: 0px;margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;">
+				<td style = "border:thin inset grey; margin: 1px; margin-left: 2px; margin-right: 2px; padding-left: 2px; padding-right: 2px; margin-top:2px; margin-bottom: 2px; padding-top: 2px; padding-bottom: 2px; " cellpadding="0"> 
+				<div  style ="display: inline-block; width:100%;">
+				<div align="center">
+					<div   style ="left:0;padding: 1px;padding-right: 1px; border-radius: 3px; background: #bfBF96; display: inline-block; padding-top: 2px; padding-bottom: 0px; "> 
+						<span class="seconds" id="second">00:00:00</span> 
+					</div>
+					<button id="markBox" style = "height: 30px;width: 30px; background-color: #555;border-radius: 5%; background-image: url('question.png'); background-size: contain;" onclick="onMarkCell()"></button>
+					<button id="refreshButton" title= "Start a new game" class="circle" style = "height: 30px;width: 30px; background-color: #555;border-radius: 50%; background-image: url('gameStart.png'); background-size: contain;" onclick="onRefershClick()"></button>
+					
+					<button id="mineBox" style = "height: 30px;width: 30px; background-color: #555;border-radius: 5%;  background-size: contain;" onclick="onMineReomve()"></button>
+					<span  id="mineDisp">000</span> 
+				</div>
+				</div>
+				</td>
+			</tr>
+			<tr style= "padding-left: 0px; padding-right: 0px;margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;">
+				<td style = "border:thin inset grey; margin: 1px; margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px;margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;"> 
+					<table id="dynTable" cellspacing="0" style="border-spacing:0; border-collapse:collapse; padding-left: 0px; padding-right: 0px;margin-top: 0px; margin-bottom: 0px; padding-top: 0px; padding-bottom: 0px;"></table> 
+				</td>
+			</tr>
+			
+		</table>
+		
+    </div>
+</body>
+</html>
