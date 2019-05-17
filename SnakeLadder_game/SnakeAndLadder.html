@@ -1,0 +1,244 @@
+<html>
+<head>
+<title>
+Snake And Ladder
+</title>
+<script>
+var positionplayer1=0;
+var Player1_OldPos=0;
+var positionplayer2=0;
+var Player2_OldPos=0;
+var player=1;
+function rollfunc()
+{
+	if (player===1)
+	{
+		var RandomNum =Math.random()*6+1;
+		var DiceNum =parseInt(RandomNum);
+		switch (DiceNum)
+		{
+		case 1:	Dice.style.backgroundImage="url('dice1.png')";	break;
+		case 2:	Dice.style.backgroundImage="url('dice2.png')";	break;
+		case 3:	Dice.style.backgroundImage="url('dice3.png')";	break;
+		case 4:	Dice.style.backgroundImage="url('dice4.png')";	break;
+		case 5:	Dice.style.backgroundImage="url('dice5.png')";	break;
+		case 6:	Dice.style.backgroundImage="url('dice6.png')";	break;
+		}
+		Dice.innerText="";
+		Player1_OldPos=positionplayer1;
+		
+		if (positionplayer1+DiceNum<=100)
+		{
+			if(Player1_OldPos>0)
+			{
+				var oldcelid="cel"+Player1_OldPos;
+				document.getElementById(oldcelid).style.backgroundImage="";
+			}
+			positionplayer1=positionplayer1+DiceNum;
+			positionplayer1=checkLadderAndSnake(positionplayer1);
+			if (positionplayer1===100)
+			{
+				alert("player1 wins");
+			}
+			var celid="cel"+positionplayer1;
+			document.getElementById(celid).style.backgroundImage="url('check1.PNG')";
+			document.getElementById(celid).style.backgroundSize="100% 100%";
+		}
+		player=2;
+	}
+	else 
+	{
+		var RandomNum =Math.random()*6+1;
+		var DiceNum =parseInt(RandomNum);
+		switch (DiceNum)
+		{
+		case 1:	Dice.style.backgroundImage="url('dice1.png')";	break;
+		case 2:	Dice.style.backgroundImage="url('dice2.png')";	break;
+		case 3:	Dice.style.backgroundImage="url('dice3.png')";	break;
+		case 4:	Dice.style.backgroundImage="url('dice4.png')";	break;
+		case 5:	Dice.style.backgroundImage="url('dice5.png')";	break;
+		case 6:	Dice.style.backgroundImage="url('dice6.png')";	break;
+		}
+		Dice.innerText="";
+		Player2_OldPos=positionplayer2;
+		
+		if (positionplayer2+DiceNum<=100)
+		{
+			if(Player2_OldPos>0)
+			{
+				var oldcelid="cel"+Player2_OldPos;
+				document.getElementById(oldcelid).style.backgroundImage="";
+			}
+			positionplayer2=positionplayer2+DiceNum;	
+			positionplayer2=checkLadderAndSnake(positionplayer2);
+			if (positionplayer2===100)
+			{
+				alert("player2 wins");
+			}
+			
+			var celid="cel"+positionplayer2;
+			document.getElementById(celid).style.backgroundImage="url('check2.PNG')";
+			document.getElementById(celid).style.backgroundSize="100% 100%";
+		}
+		player=1;
+	}	
+}
+
+function checkLadderAndSnake(position)
+{
+	switch (position)	
+	{
+		case 1: return 38;
+		case 4: return 14;
+		case 9: return 31;
+		case 21: return 42;
+		case 28: return 84;
+		case 51: return 67;
+		case 72: return 91;
+		case 80: return 99;
+		case 17: return 7 ;
+		case 54: return 34;
+		case 62: return 19;
+		case 64: return 60;
+		case 87: return 36;
+		case 93: return 73;
+		case 95: return 75;
+		case 98: return 79;
+		default : return position;
+	}		
+}
+
+
+
+</script>
+</head>
+<body align=center style="background-image:url('Hydrangeas.jpg');background-size: 100% 100%;">
+<h1 style="color:white">Snake And Ladder Game</h1>
+	<table width=500px height=500px align=center style="background-image:url('SAL.jpg')">
+	<tr>
+		<td id="cel100">  </td>
+		<td id="cel99">  </td>
+		<td id="cel98">  </td>
+		<td id="cel97">  </td>
+		<td id="cel96">  </td>
+		<td id="cel95">  </td>
+		<td id="cel94">  </td>
+		<td id="cel93">  </td>
+		<td id="cel92">  </td>
+		<td id="cel91">  </td>
+	</tr>
+	<tr>
+		<td id="cel81">  </td>
+		<td id="cel82">  </td>
+		<td id="cel83">  </td>
+		<td id="cel84">  </td>
+		<td id="cel85">  </td>
+		<td id="cel86">  </td>
+		<td id="cel87">  </td>
+		<td id="cel88">  </td>
+		<td id="cel89">  </td>
+		<td id="cel90">  </td>
+	</tr>
+	<tr>
+		<td id="cel80">  </td>
+		<td id="cel79">  </td>
+		<td id="cel78">  </td>
+		<td id="cel77">  </td>
+		<td id="cel76">  </td>
+		<td id="cel75">  </td>
+		<td id="cel74">  </td>
+		<td id="cel73">  </td>
+		<td id="cel72">  </td>
+		<td id="cel71">  </td>
+	</tr>
+	<tr>
+		<td id="cel61">  </td>
+		<td id="cel62">  </td>
+		<td id="cel63">  </td>
+		<td id="cel64">  </td>
+		<td id="cel65">  </td>
+		<td id="cel66">  </td>
+		<td id="cel67">  </td>
+		<td id="cel68">  </td>
+		<td id="cel69">  </td>
+		<td id="cel70">  </td>
+	</tr>
+	<tr>
+		<td id="cel60">  </td>
+		<td id="cel59">  </td>
+		<td id="cel58">  </td>
+		<td id="cel57">  </td>
+		<td id="cel56">  </td>
+		<td id="cel55">  </td>
+		<td id="cel54">  </td>
+		<td id="cel53">  </td>
+		<td id="cel52">  </td>
+		<td id="cel51">  </td>
+	</tr>
+	<tr>
+		<td id="cel41">  </td>
+		<td id="cel42">  </td>
+		<td id="cel43">  </td>
+		<td id="cel44">  </td>
+		<td id="cel45">  </td>
+		<td id="cel46">  </td>
+		<td id="cel47">  </td>
+		<td id="cel48">  </td>
+		<td id="cel49">  </td>
+		<td id="cel50">  </td>
+	</tr>
+	<tr>
+		<td id="cel40">  </td>
+		<td id="cel39">  </td>
+		<td id="cel38">  </td>
+		<td id="cel37">  </td>
+		<td id="cel36">  </td>
+		<td id="cel35">  </td>
+		<td id="cel34">  </td>
+		<td id="cel33">  </td>
+		<td id="cel32">  </td>
+		<td id="cel31">  </td>
+	</tr>
+	<tr>
+		<td id="cel21">  </td>
+		<td id="cel22">  </td>
+		<td id="cel23">  </td>
+		<td id="cel24">  </td>
+		<td id="cel25">  </td>
+		<td id="cel26">  </td>
+		<td id="cel27">  </td>
+		<td id="cel28">  </td>
+		<td id="cel29">  </td>
+		<td id="cel30">  </td>
+	</tr>
+	<tr>
+		<td id="cel20">  </td>
+		<td id="cel19">  </td>
+		<td id="cel18">  </td>
+		<td id="cel17">  </td>
+		<td id="cel16">  </td>
+		<td id="cel15">  </td>
+		<td id="cel14">  </td>
+		<td id="cel13">  </td>
+		<td id="cel12">  </td>
+		<td id="cel11">  </td>
+	</tr>
+	<tr>
+		<td id="cel1"> </td>
+		<td id="cel2">  </td>
+		<td id="cel3">  </td>
+		<td id="cel4">  </td>
+		<td id="cel5">  </td>
+		<td id="cel6">  </td>
+		<td id="cel7">  </td>
+		<td id="cel8">  </td>
+		<td id="cel9">  </td>
+		<td id="cel10">  </td>
+	</tr>
+	</table></br>
+	<button style ="width:90px; height:90px;background-size : 100% 100%; " id ="Dice" onClick ="rollfunc()"> <b>Roll</b>
+	</button>
+	<br><br><br><br>
+	<h1 style="color:yellow">Done By Mahalakshmi and Nithisha</h1>
+</body>
+</html>
