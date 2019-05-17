@@ -1,0 +1,709 @@
+<html>
+<head>
+<title>
+       memory game
+</title>
+<script>
+    var doll=[];
+	var MyRandomArray =[];
+	var positionarray =[]; 
+    var NoOfbuttonclicked=0;
+    var Firstbutton;
+    var Secondbutton;
+	var buttontoremove=[];
+	var chances=0;
+	var marks=0;
+    function gamereset()
+     {
+	  if(buttontoremove.indexOf(c11)== -1)
+	  {
+	   c11.disabled=false;
+	   c11.innerHTML="";
+	   c11.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c12)== -1)
+	  {
+	   c12.disabled=false;
+	    c12.innerHTML="";
+		c12.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c13)== -1)
+	  {
+	   c13.disabled=false;
+	    c13.innerHTML="";
+		c13.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c14)== -1)
+	  {
+	   c14.disabled=false;
+	    c14.innerHTML="";
+		c14.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c15)== -1)
+	  {
+	   c15.disabled=false;
+	    c15.innerHTML="";
+		c15.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c16)== -1)
+	  {
+	   c16.disabled=false;
+	    c16.innerHTML="";
+		c16.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c21)== -1)
+	  {
+	   c21.disabled=false;
+	    c21.innerHTML="";
+		c21.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c22)== -1)
+	  {
+	   c22.disabled=false;
+	    c22.innerHTML="";
+		c22.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	  if(buttontoremove.indexOf(c23)== -1)
+	  {
+	   c23.disabled=false;
+	    c23.innerHTML="";
+		c23.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c24)== -1)
+	  {
+	   c24.disabled=false;
+	    c24.innerHTML="";
+		c24.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c25)== -1)
+	  {
+	   c25.disabled=false;
+	    c25.innerHTML="";
+		c25.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c26)== -1)
+	  {
+	   c26.disabled=false;
+	    c26.innerHTML="";
+		c26.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c31)== -1)
+	  {
+	   c31.disabled=false;
+	    c31.innerHTML="";
+		c31.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c32)== -1)
+	  {
+	   c32.disabled=false;
+	    c32.innerHTML="";
+		c32.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c33)== -1)
+	  {
+	   c33.disabled=false;
+	    c33.innerHTML="";
+		c33.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c34)== -1)
+	  {
+	   c34.disabled=false;
+	    c34.innerHTML="";
+		c34.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c35)== -1)
+	  {
+	   c35.disabled=false;
+	    c35.innerHTML="";
+		c35.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c36)== -1)
+	  {
+	   c36.disabled=false;
+	    c36.innerHTML="";
+		c36.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c41)== -1)
+	  {
+	   c41.disabled=false;
+	    c41.innerHTML="";
+		c41.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c42)== -1)
+	  {
+	   c42.disabled=false;
+	    c42.innerHTML="";
+		c42.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c43)== -1)
+	  {
+	   c43.disabled=false;
+	    c43.innerHTML="";
+		c43.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c44)== -1)
+	  {
+	   c44.disabled=false;
+	    c44.innerHTML="";
+		c44.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c45)== -1)
+	  {
+	   c45.disabled=false;
+	    c45.innerHTML="";
+		c45.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c46)== -1)
+	  {
+	   c46.disabled=false;
+	    c46.innerHTML="";
+		c46.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c51)== -1)
+	  {
+	   c51.disabled=false;
+	    c51.innerHTML="";
+		c51.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c52)== -1)
+	  {
+	   c52.disabled=false;
+	    c52.innerHTML="";
+		c52.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c53)== -1)
+	  {
+	   c53.disabled=false;
+	    c53.innerHTML="";
+		c53.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c54)== -1)
+	  {
+	   c54.disabled=false;
+	    c54.innerHTML="";
+		c54.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c55)== -1)
+	  {
+	   c55.disabled=false;
+	    c55.innerHTML="";
+		c55.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c56)== -1)
+	  {
+	   c56.disabled=false;
+	    c56.innerHTML="";
+		c56.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c61)== -1)
+	  {
+	   c61.disabled=false;
+	    c61.innerHTML="";
+		c61.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c62)== -1)
+	  {
+	   c62.disabled=false;
+	    c62.innerHTML="";
+		c62.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c63)== -1)
+	  {
+	   c63.disabled=false;
+	    c63.innerHTML="";
+		c63.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c64)== -1)
+	  {
+	   c64.disabled=false;
+	    c64.innerHTML="";
+		c64.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c65)== -1)
+	  {
+	   c65.disabled=false;
+	    c65.innerHTML="";
+		c65.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+	   if(buttontoremove.indexOf(c66)== -1)
+	  {
+	   c66.disabled=false;
+	    c66.innerHTML="";
+		c66.style.backgroundImage = "url('images/QuesMark.jpeg')";
+	   }
+     }
+      function timeup()
+	  {
+		gamereset();
+	  }
+	  
+	function startgame()
+   {
+    if (startbutton.innerText==="reset")
+	{
+	 document.location.reload();
+	}
+	 while (doll.length<18)
+	 {
+	  var god=Math.floor(Math.random()*18)+1;
+	  if(doll.indexOf(god)=== -1)
+	  {
+		doll.push(god);
+	  }
+	 }
+	for(i=0;i<18;i++)
+	 {
+		MyRandomArray.push(doll[i]);
+	 }	 
+	for (i=0;i<18;i++)
+	{
+		MyRandomArray.push(doll[i]);
+	}
+	
+	var temp =[];
+	for(var j=0; j<36;j++)
+	{		
+	
+		  var god1=Math.floor(Math.random()*36);
+		  while(temp.indexOf(god1) !== -1)
+		  {
+			god1=Math.floor(Math.random()*36);
+		  }		  
+		  temp.push(god1);		  
+		  positionarray[j] = MyRandomArray[god1];	 
+	 }
+		 
+		c11.disabled=false; 	
+		c12.disabled=false;
+		c13.disabled=false;
+		c14.disabled=false;
+		c15.disabled=false;
+		c16.disabled=false;
+		c21.disabled=false;
+		c22.disabled=false;
+		c23.disabled=false;
+		c24.disabled=false;
+		c25.disabled=false;
+		c26.disabled=false;
+		c31.disabled=false;
+		c32.disabled=false;
+		c33.disabled=false;
+		c34.disabled=false;
+		c35.disabled=false;
+		c36.disabled=false;
+		c41.disabled=false;
+		c42.disabled=false;
+		c43.disabled=false;
+		c44.disabled=false;
+		c45.disabled=false;
+		c46.disabled=false;
+		c51.disabled=false;
+		c52.disabled=false;
+		c53.disabled=false;
+		c54.disabled=false;
+		c55.disabled=false;
+		c56.disabled=false;
+		c61.disabled=false;
+		c62.disabled=false;
+		c63.disabled=false;
+		c64.disabled=false;
+		c65.disabled=false;
+		c66.disabled=false;
+		startbutton.innerText="reset";
+	}
+	function clickbutton(buttonid)
+	{
+	 NoOfbuttonclicked++;
+	 buttonid.disabled=true;
+     if(NoOfbuttonclicked==1)
+	 {
+	  Firstbutton=buttonid;
+	 }
+	 if(NoOfbuttonclicked==2)
+	 {
+      Secondbutton=buttonid;	 
+ 	 }
+	if(buttonid == c11)
+	{
+	 buttonid.hiddentext= positionarray[0];	 
+	 var text = "url('images/"+positionarray[0]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c12)
+	{
+	 buttonid.hiddentext= positionarray[1];
+	 var text = "url('images/"+positionarray[1]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c13)
+	{
+	 buttonid.hiddentext= positionarray[2];	 
+	 var text = "url('images/"+positionarray[2]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c14)
+	{
+	 buttonid.hiddentext= positionarray[3];
+	 var text = "url('images/"+positionarray[3]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c15)
+	{
+	 buttonid.hiddentext= positionarray[4];	 
+	 var text = "url('images/"+positionarray[4]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c16)
+	{
+	 buttonid.hiddentext= positionarray[5];
+	 var text = "url('images/"+positionarray[5]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c21)
+	{
+	 buttonid.hiddentext= positionarray[6];	 
+	 var text = "url('images/"+positionarray[6]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c22)
+	{
+	 buttonid.hiddentext= positionarray[7];
+	 var text = "url('images/"+positionarray[7]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c23)
+	{
+	 buttonid.hiddentext= positionarray[8];	 
+	 var text = "url('images/"+positionarray[8]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c24)
+	{
+	 buttonid.hiddentext= positionarray[9];
+	 var text = "url('images/"+positionarray[9]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c25)
+	{
+	 buttonid.hiddentext= positionarray[10];	 
+	 var text = "url('images/"+positionarray[10]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c26)
+	{
+	 buttonid.hiddentext= positionarray[11];
+	 var text = "url('images/"+positionarray[11]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c31)
+	{
+	 buttonid.hiddentext= positionarray[12];	 
+	 var text = "url('images/"+positionarray[12]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c32)
+	{
+	 buttonid.hiddentext= positionarray[13];
+	 var text = "url('images/"+positionarray[13]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c33)
+	{
+	 buttonid.hiddentext= positionarray[14];	 
+	 var text = "url('images/"+positionarray[14]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c34)
+	{
+	 buttonid.hiddentext= positionarray[15];
+	 var text = "url('images/"+positionarray[15]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c35)
+	{
+	 buttonid.hiddentext= positionarray[16];	 
+	 var text = "url('images/"+positionarray[16]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c36)
+	{
+	 buttonid.hiddentext= positionarray[17];
+	 var text = "url('images/"+positionarray[17]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c41)
+	{
+	 buttonid.hiddentext= positionarray[18];	 
+	 var text = "url('images/"+positionarray[18]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c42)
+	{
+	 buttonid.hiddentext= positionarray[19];
+	 var text = "url('images/"+positionarray[19]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c43)
+	{
+	 buttonid.hiddentext= positionarray[20];	 
+	 var text = "url('images/"+positionarray[20]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c44)
+	{
+	 buttonid.hiddentext= positionarray[21];
+	 var text = "url('images/"+positionarray[21]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c45)
+	{
+	 buttonid.hiddentext= positionarray[22];	 
+	 var text = "url('images/"+positionarray[22]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c46)
+	{
+	 buttonid.hiddentext= positionarray[23];
+	 var text = "url('images/"+positionarray[23]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c51)
+	{
+	 buttonid.hiddentext= positionarray[24];	 
+	 var text = "url('images/"+positionarray[24]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c52)
+	{
+	 buttonid.hiddentext= positionarray[25];
+	 var text = "url('images/"+positionarray[25]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c53)
+	{
+	 buttonid.hiddentext= positionarray[26];	 
+	 var text = "url('images/"+positionarray[26]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c54)
+	{
+	 buttonid.hiddentext= positionarray[27];
+	 var text = "url('images/"+positionarray[27]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c55)
+	{
+	 buttonid.hiddentext= positionarray[28];	 
+	 var text = "url('images/"+positionarray[28]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c56)
+	{
+	 buttonid.hiddentext= positionarray[29];
+	 var text = "url('images/"+positionarray[29]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c61)
+	{
+	 buttonid.hiddentext= positionarray[30];	 
+	 var text = "url('images/"+positionarray[30]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c62)
+	{
+	 buttonid.hiddentext= positionarray[31];
+	 var text = "url('images/"+positionarray[31]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c63)
+	{
+	 buttonid.hiddentext= positionarray[32];	 
+	 var text = "url('images/"+positionarray[32]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c64)
+	{
+	 buttonid.hiddentext= positionarray[33];
+	 var text = "url('images/"+positionarray[33]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c65)
+	{
+	 buttonid.hiddentext= positionarray[34];	 
+	 var text = "url('images/"+positionarray[34]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(buttonid == c66)
+	{
+	 buttonid.hiddentext= positionarray[35];
+	 var text = "url('images/"+positionarray[35]+".png')"
+	 buttonid.style.backgroundImage = text;
+	 buttonid.style.backgroundSize = "100% 100%";
+	}
+	if(NoOfbuttonclicked==2)
+	{
+	 chances++;
+		if (Firstbutton.hiddentext==Secondbutton.hiddentext)
+		{
+			Firstbutton.disabled=true;
+			Secondbutton.disabled=true;
+			buttontoremove.push(Firstbutton);
+			buttontoremove.push(Secondbutton);
+			gamereset();
+			marks++;
+			if (marks==18)
+			{
+			winner.innerHTML="winner winner chicken dinner!!!";
+			}
+		}
+        else
+        {
+			setTimeout(timeup,1000);
+			c11.disabled=true; 	
+			c12.disabled=true;
+			c13.disabled=true;
+			c14.disabled=true;
+			c15.disabled=true;
+			c16.disabled=true;
+			c21.disabled=true;
+			c22.disabled=true;
+			c23.disabled=true;
+			c24.disabled=true;
+			c25.disabled=true;
+			c26.disabled=true;
+			c31.disabled=true;
+			c32.disabled=true;
+			c33.disabled=true;
+			c34.disabled=true;
+			c35.disabled=true;
+			c36.disabled=true;
+			c41.disabled=true;
+			c42.disabled=true;
+			c43.disabled=true;
+			c44.disabled=true;
+			c45.disabled=true;
+			c46.disabled=true;
+			c51.disabled=true;
+			c52.disabled=true;
+			c53.disabled=true;
+			c54.disabled=true;
+			c55.disabled=true;
+			c56.disabled=true;
+			c61.disabled=true;
+			c62.disabled=true;
+			c63.disabled=true;
+			c64.disabled=true;
+			c65.disabled=true;
+			c66.disabled=true;
+        }
+		NoOfbuttonclicked=0;
+	}
+	tries.value=chances;
+	points.value=marks;
+	}
+	 
+   
+
+
+</script>
+</head>
+<body style="background-image:url('images/BckgroundImg.png');background-size:100% 100%;">
+ 
+ <div align=center>
+ <h1> Memory game </h1>
+ <label> Tries  :</label>
+ <input type= number id="tries" style="width:7%;height:5%" disabled=true></input></br></br>
+ <label> Points :</label>
+ <input type= number id="points" style="width:7%;height:5%" disabled=true></input></br></br>
+ <label id="winner"></label></br></br>
+   <table>
+   <tr>
+     <td width=50px; height=50px><button id="c11"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c11)"></button>  </td>
+	 <td width=50px; height=50px><button id="c12"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c12)"></button>  </td>
+	 <td width=50px; height=50px><button id="c13"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c13)"></button>  </td>
+	 <td width=50px; height=50px><button id="c14"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c14)"></button>  </td>
+	 <td width=50px; height=50px><button id="c15"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c15)"></button>  </td>
+	 <td width=50px; height=50px><button id="c16"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c16)"></button>  </td>
+   </tr>
+   <tr>
+     <td width=50px; height=50px><button id="c21"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c21)"></button>  </td>
+	 <td width=50px; height=50px><button id="c22"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c22)"></button>  </td>
+	 <td width=50px; height=50px><button id="c23"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c23)"></button>  </td>
+	 <td width=50px; height=50px><button id="c24"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c24)"></button>  </td>
+	 <td width=50px; height=50px><button id="c25"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c25)"></button>  </td>
+	 <td width=50px; height=50px><button id="c26"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c26)"></button>  </td>
+   </tr>
+   <tr>
+     <td width=50px; height=50px><button id="c31"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c31)"></button>  </td>
+	 <td width=50px; height=50px><button id="c32"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c32)"></button>  </td>
+	 <td width=50px; height=50px><button id="c33"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c33)"></button>  </td>
+	 <td width=50px; height=50px><button id="c34"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c34)"></button>  </td>
+	 <td width=50px; height=50px><button id="c35"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c35)"></button>  </td>
+	 <td width=50px; height=50px><button id="c36"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c36)"></button>  </td>
+   </tr>
+   <tr>
+     <td width=50px; height=50px><button id="c41"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c41)"></button>  </td>
+	 <td width=50px; height=50px><button id="c42"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c42)"></button>  </td>
+	 <td width=50px; height=50px><button id="c43"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c43)"></button>  </td>
+	 <td width=50px; height=50px><button id="c44"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c44)"></button>  </td>
+	 <td width=50px; height=50px><button id="c45"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c45)"></button>  </td>
+	 <td width=50px; height=50px><button id="c46"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c46)"></button>  </td>
+   </tr>
+   <tr>
+     <td width=50px; height=50px><button id="c51"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c51)"></button>  </td>
+	 <td width=50px; height=50px><button id="c52"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c52)"></button>  </td>
+	 <td width=50px; height=50px><button id="c53"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c53)"></button>  </td>
+	 <td width=50px; height=50px><button id="c54"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c54)"></button>  </td>
+	 <td width=50px; height=50px><button id="c55"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c55)"></button>  </td>
+	 <td width=50px; height=50px><button id="c56"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c56)"></button>  </td>
+   </tr>
+   <tr>
+     <td width=50px; height=50px><button id="c61"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c61)"></button>  </td>
+	 <td width=50px; height=50px><button id="c62"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c62)"></button>  </td>
+	 <td width=50px; height=50px><button id="c63"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c63)"></button>  </td>
+	 <td width=50px; height=50px><button id="c64"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c64)"></button>  </td>
+	 <td width=50px; height=50px><button id="c65"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c65)"></button>  </td>
+	 <td width=50px; height=50px><button id="c66"style= "background-image:url('images/QuesMark.jpeg');background-size:100%;width:100%;height:100%" disabled=true onclick ="clickbutton(c66)"></button>  </td>
+   </tr>
+   </table>
+   <br>
+      <button id="startbutton" align=center style= "width:10%; height:5%" onclick="startgame()">start</button>
+   </div>
+   <h1 align="center">Done By Priyadharsini and Tharun</h1>
+   </body>
+   </html>
