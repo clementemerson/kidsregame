@@ -1,0 +1,285 @@
+ <HTML>
+ <head>
+ <title>
+ BRAINVITA
+ </title>
+ <script>
+ var blueB=[];
+ var removeB=[];
+ var Buttons=[];
+ var GoliRemoved=[];
+ var currentbutton=null;
+ function startgame()
+ {
+ if(start.innerText==="RESET")
+ {
+	Result.innerText = "";
+	GoliRemoved = [];
+ for(i=0;i<Buttons.length;i++)
+  {
+	var button=document.getElementById(Buttons[i] );
+	button.style.backgroundImage="url('marble.png')";
+	button.hiddenText="0";
+	button.style.backgroundColor = "";
+    if (Buttons[i]==="move44")
+	{
+		button.style.backgroundColor = "White";
+		button.style.backgroundImage="";
+		button.hiddenText="*";	
+	}
+     //button.hiddenText="*";	
+  }
+  Reset();
+  currentbutton=null;
+  return;
+ }
+ Buttons.push("move13");
+ Buttons.push("move14");
+ Buttons.push("move15");
+ Buttons.push("move23");
+ Buttons.push("move24");
+ Buttons.push("move25");
+ Buttons.push("move31");
+ Buttons.push("move32");
+ Buttons.push("move33");
+ Buttons.push("move34");
+ Buttons.push("move35");
+ Buttons.push("move36");
+ Buttons.push("move37");
+ Buttons.push("move41");
+ Buttons.push("move42");
+ Buttons.push("move43");
+ Buttons.push("move44");
+ Buttons.push("move45");
+ Buttons.push("move46");
+ Buttons.push("move47");
+ Buttons.push("move51");
+ Buttons.push("move52");
+ Buttons.push("move53");
+ Buttons.push("move54");
+ Buttons.push("move55");
+ Buttons.push("move56");
+ Buttons.push("move57");
+ Buttons.push("move63");
+ Buttons.push("move64");
+ Buttons.push("move65");
+ Buttons.push("move73");
+ Buttons.push("move74");
+ Buttons.push("move75");
+  start.innerText="RESET";
+  for (i=0;i<Buttons.length;i++)
+  {
+	var button=document.getElementById(Buttons[i] );
+	button.disabled = false;
+	button.hiddenText = "0"	;
+	if (Buttons[i]==="move44")
+		button.hiddenText = "*"	;
+  }
+}
+
+ function Reset()
+ {
+	 for (i=0;i<blueB.length;i++)
+	 {
+		var button=document.getElementById(blueB[i] );
+		button.style.backgroundColor="White";
+	 }
+	 blueB=[];
+	 removeB=[];
+	 if (GoliRemoved.length === 31)
+		Result.innerText = "!!Winner Winner Chicken Dinner!!";
+ }
+ function movegame()
+ { 
+	 event.target.style.backgroundColor="red";
+	 if (currentbutton && currentbutton.id === event.target.id)
+	 {
+		event.target.style.backgroundColor="";
+		Reset();
+		currentbutton=null;
+	 }
+   else if (currentbutton!==null)
+    {
+		event.target.style.color="";
+		 var button2=event.target;
+		 var button2id=button2.id;
+		 var removeposition=blueB.indexOf(button2id);
+		 if(removeposition !== -1)
+		 {
+			 currentbutton.hiddenText="*";
+			 currentbutton.style.backgroundImage="";
+			 currentbutton.style.backgroundColor = "White";
+			 button2.hiddenText="0";
+			 button2.style.backgroundImage="url('marble.png')";
+			 var RemoveButtonId=removeB[removeposition];
+			 var button3=document.getElementById(RemoveButtonId);
+			 GoliRemoved.push("1");
+			 button3.hiddenText="*";
+			 button3.style.backgroundColor = "White";
+			 button3.style.backgroundImage="";
+		 }
+		 else
+		 {
+			currentbutton.style.backgroundColor = "";
+			button2.style.backgroundColor = "";
+		 }
+		 currentbutton.style.color="";
+		 currentbutton=null;
+		Reset();
+	}
+	
+	else
+	{
+	currentbutton=event.target;
+	if (currentbutton.hiddenText === "*")
+	{
+		currentbutton.style.backgroundColor = "White";
+		currentbutton = null;
+		return;
+	}
+  var buttonId =event.target.id;
+  var buttonNum=buttonId.slice(4);
+  var buttonInt= parseInt(buttonNum);
+  var Lbutton  ="move"+(buttonInt-1); 
+  var LLbutton ="move"+(buttonInt-2);
+  var Rbutton  ="move"+(buttonInt+1);
+  var RRbutton ="move"+(buttonInt+2);
+  var Tbutton  ="move"+(buttonInt-10);
+  var TTbutton ="move"+(buttonInt-20);
+  var Dbutton  ="move"+(buttonInt+10);
+  var DDbutton ="move"+(buttonInt+20);
+  var LB = document.getElementById(Lbutton);
+  var LLB = document.getElementById(LLbutton);
+  var RB = document.getElementById(Rbutton);
+  var RRB = document.getElementById(RRbutton);
+  var TB = document.getElementById(Tbutton);
+  var TTB = document.getElementById(TTbutton);
+  var DB = document.getElementById(Dbutton);
+  var DDB = document.getElementById(DDbutton);
+
+  if (LB && LLB)
+  {
+	if (LB.hiddenText==="0" && LLB.hiddenText==="*")
+	{
+		LLB.style.backgroundColor="blue";
+		blueB.push(LLB.id);
+		removeB.push(LB.id);
+	}
+  }
+   if (RB && RRB)
+  {
+	if (RB.hiddenText==="0" && RRB.hiddenText==="*")
+	{
+		RRB.style.backgroundColor="blue";
+		blueB.push(RRB.id);
+        removeB.push(RB.id);
+	}
+  }
+ 
+   if (TB && TTB)
+  {
+	if (TB.hiddenText==="0" && TTB.hiddenText==="*")
+		{
+		TTB.style.backgroundColor="blue";
+		blueB.push(TTB.id);
+		removeB.push(TB.id);
+		}
+  }
+  if (DB && DDB)
+  {
+	if (DB.hiddenText==="0" && DDB.hiddenText==="*")
+		{
+		DDB.style.backgroundColor="blue";
+		blueB.push(DDB.id);
+		removeB.push(DB.id);
+		}
+  } 
+  }
+ }
+</script>
+
+ </head>
+ <body style = "background-size:100% 100%; background-image: url('Image.jpg')">
+ <BR><BR><BR>
+ <DIV align=center style="color: white; font-size:30; font-family:comic sans MS">
+<B>BRAINVITA</B></br></br>
+ </DIV>
+ 
+<div align=center>
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move13" disabled = true>
+</button>
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move14" disabled = true>
+</button>
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move15" disabled = true>
+</button></br>
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move23" disabled = true>
+</button>
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move24" disabled = true>
+</button>	
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move25" disabled = true>
+</button></br>
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move31" disabled = true>
+</button>
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move32" disabled = true>
+</button>
+<button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move33" disabled = true>
+</button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move34" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move35" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move36" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move37" disabled = true>
+ </button></br>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move41" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move42" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move43" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-color: White" onclick="movegame()" id="move44" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move45" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move46" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move47" disabled = true>
+ </button></br>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move51" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move52" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move53" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move54" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move55" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move56" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move57" disabled = true>
+ </button></br>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move63" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move64" disabled = true>
+ </button> 
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move65" disabled = true>
+ </button></br>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move73" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move74" disabled = true>
+ </button>
+ <button style="height:60px; width:60px;border-radius:50%; background-size: contain; background-image: url('marble.png')" onclick="movegame()" id="move75" disabled = true>
+ </button></br>
+ </br>
+ </br>
+ </div>
+ <div align=center>
+ <button style="height:75px; width:150px; font-size:25px " onclick="startgame()" id="start">START
+ </button>
+ </div><br>
+ <p id="Result" style="font-size:30px; color:white" align=center></p>
+  <h1 align="center">Done By L.Krishnakiran and Harini</h1>
+ </body>
+ </HTML>
