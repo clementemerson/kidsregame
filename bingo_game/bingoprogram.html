@@ -1,0 +1,285 @@
+<html>
+	<head>
+		<title>
+		BINGO
+		</title>
+		<script>
+		var btnArray = [];
+		
+		function StartGame()
+		{
+			sg.innerText= "Reset";
+			tblbB.innerText="";
+			tblbI.innerText="";
+			tblbN.innerText="";
+			tblbG.innerText="";
+			tblbO.innerText="";
+			winner.innerHTML='&nbsp;';
+			score= 0 ;
+			btnArray = [];
+			btnArray.push(b1);
+			btnArray.push(b2);
+			btnArray.push(b3);
+			btnArray.push(b4);
+			btnArray.push(b5);
+			btnArray.push(b6);
+			btnArray.push(b7);
+			btnArray.push(b8);
+			btnArray.push(b9);
+			btnArray.push(b10);
+			btnArray.push(b11);
+			btnArray.push(b12);
+			btnArray.push(b13);
+			btnArray.push(b14);
+			btnArray.push(b15);
+			btnArray.push(b16);
+			btnArray.push(b17);
+			btnArray.push(b18);
+			btnArray.push(b19);
+			btnArray.push(b20);
+			btnArray.push(b21);
+			btnArray.push(b22);
+			btnArray.push(b23);
+			btnArray.push(b24);
+			btnArray.push(b25);
+			
+			var randomNumArray = [];
+			while( randomNumArray.length < 25)
+			{
+				var a = Math.floor(Math.random()*25+1);
+				if ( randomNumArray.indexOf(a)===-1)
+				{
+					randomNumArray.push(a);
+				}
+			}
+			
+			for (num = 0; num < 25; num++)
+			{
+				btnArray[num].clicked = false;
+				btnArray[num].innerText= randomNumArray[num] ;
+				btnArray[num].disabled= false;
+				btnArray[num].style.backgroundColor="";	
+			}
+		}
+		var score = 0;
+		function btnClk (btnIn)
+		{
+			if(btnIn.clicked === false)
+			{
+				btnIn.style.backgroundColor="yellow";
+				btnIn.clicked = true;
+			}
+			else if(btnIn.clicked === true)
+			{
+				btnIn.style.backgroundColor="";	
+				btnIn.clicked = false;				
+			}
+			
+			
+			//Finds position of button inside array
+			var btnPos = btnArray.indexOf(btnIn);
+			
+			//Finds the row number.
+			var rowNum = Math.floor(btnPos/5);
+			//finds the collom number
+			var colNum = btnPos%5;
+			
+			var digNum1 = false	;
+			if(btnPos%4===0 && btnPos !==0 && btnPos !== 24)
+			{ 
+				digNum1 = true ;
+			}
+			else 
+			{
+				digNum1 = false ;
+			}
+			var digNum2 = false ;
+			if(btnPos%6===0)
+			{
+			    digNum2 = true ;
+		    }
+			else
+			{
+			    digNum2 = false ;
+			}
+			
+			
+			var count = 0;			
+			for (ns = 5*rowNum; ns <  rowNum*5 + 5; ns++)
+			{
+				if (btnArray[ns].clicked===true)
+				{
+					count++;
+				}
+			}
+			if (count === 5)
+			{ 
+				score++;
+				for (mp = 5*rowNum;  mp < rowNum*5 + 5; mp++)
+				{
+					btnArray[mp].style.backgroundColor="pink";
+					btnArray[mp].disabled= true ;
+				}
+			}  
+			
+			var count = 0;			
+			for (ns = colNum*1; ns <=20+colNum ; ns = ns+5)
+			{
+				if (btnArray[ns].clicked===true)
+				{
+					count++;
+				}
+			}
+			if (count === 5)
+			{
+			score++;
+				for (mp = colNum*1;  mp <=20+colNum; mp = mp+5)
+				{
+					btnArray[mp].style.backgroundColor="pink";
+					btnArray[mp].disabled= true ;
+				}
+			}
+			
+			if (digNum1===true)
+			{
+				var count = 0;			
+				for (ns = 4; ns <=20 ; ns = ns+4)
+				{
+					if (btnArray[ns].clicked===true)
+					{
+						count++;
+					}
+				}
+				if (count === 5)
+				{
+				score++;
+					for (mp = 4;  mp <=20; mp = mp+4)
+					{
+						btnArray[mp].style.backgroundColor="pink";
+						btnArray[mp].disabled= true ;
+					}
+				}
+			}
+			if (digNum2===true)
+			{
+				var count = 0;			
+				for (ns = 0; ns <=24 ; ns = ns+6)
+				{
+					if (btnArray[ns].clicked===true)
+					{
+						count++;
+					}
+				}
+				if (count === 5)
+				{
+				score++;
+					for (mp = 0;  mp <=24; mp = mp+6)
+					{
+						btnArray[mp].style.backgroundColor="pink";
+						btnArray[mp].disabled= true ;
+					}
+				}
+			}
+			
+			if (score===1)
+			{
+				tblbB.innerText="B";
+			}
+			else if  (score===2)
+			{
+			    tblbB.innerText="B";
+				tblbI.innerText="I";
+			}
+			if (score===3)
+			{
+				tblbB.innerText="B";
+				tblbI.innerText="I";
+				tblbN.innerText="N";
+			}
+ 			if (score===4)
+			{
+				tblbB.innerText="B";
+				tblbI.innerText="I";
+				tblbN.innerText="N";
+				tblbG.innerText="G";
+			}
+			if (score===5)
+			{
+				tblbB.innerText="B";
+				tblbI.innerText="I";
+				tblbN.innerText="N";
+				tblbG.innerText="G";
+				tblbO.innerText="O";
+				winner.innerText="Winner Winner Chicken Dinner";
+				
+				for (num = 0; num < 25; num++)
+				{
+					btnArray[num].disabled = true;
+				}	
+			}
+		}
+		</script>
+	</head>
+	<body align = center  style = "background-image:url(BckgroundImg.png)">
+	<br>  
+	<p  style="font-size: 50px; font-weight:bold"> BINGO </P>
+	
+	<p id="winner" style="font-size: 25px; font-weight:bold"> &nbsp; </p>
+	<br><br> <br>
+	<table align = center  border = 5px> 
+	
+		<tr> 
+			<td id = "tblbB"  style="width:50px;height:50px" align = center >  </td>
+			<td id = "tblbI" style="width:50px;height:50px" align = center >  </td>
+			<td id = "tblbN" style="width:50px;height:50px"  align = center >  </td>
+			<td id = "tblbG" style="width:50px;height:50px" align = center >  </td>
+			<td id = "tblbO" style="width:50px;height:50px" align = center >  </td>		
+		</tr>
+	
+	<table>
+		<table align = center  border = 5px >
+			<tr>
+				<td> <button id = "b1" onclick = "btnClk(b1)" disabled=true; style="width:50px;height:50px" > 1 </button> </td>
+				<td> <button id = "b2" onclick = "btnClk(b2)" disabled=true; style="width:50px;height:50px"> 2 </button> </td>
+				<td> <button id = "b3" onclick = "btnClk(b3)" disabled=true; style="width:50px;height:50px"> 3 </button> </td>
+				<td> <button id = "b4" onclick = "btnClk(b4)" disabled=true; style="width:50px;height:50px"> 4 </button> </td>
+				<td> <button id = "b5" onclick = "btnClk(b5)" disabled=true; style="width:50px;height:50px"> 5 </button> </td>
+			</tr>
+
+			<tr>
+				<td> <button id = "b6" onclick = "btnClk(b6)" disabled=true;  style="width:50px;height:50px"> 6 </button> </td>
+				<td> <button id = "b7" onclick = "btnClk(b7)" disabled=true;  style="width:50px;height:50px"> 7 </button>  </td>
+				<td> <button id = "b8" onclick = "btnClk(b8)" disabled=true;  style="width:50px;height:50px"> 8 </button> </td>
+				<td> <button id = "b9" onclick = "btnClk(b9)" disabled=true;  style="width:50px;height:50px"> 9 </button> </td>
+				<td> <button id = "b10" onclick = "btnClk(b10)" disabled=true;  style="width:50px;height:50px"> 10 </button> </td>
+			</tr>
+
+			<tr>
+				<td> <button  id = "b11" onclick = "btnClk(b11)" disabled=true;  style="width:50px;height:50px"> 11 </button> </td>
+				<td> <button  id = "b12" onclick = "btnClk(b12)" disabled=true; style="width:50px;height:50px"> 12 </button> </td>
+				<td> <button  id = "b13" onclick = "btnClk(b13)" disabled=true; style="width:50px;height:50px"> 13 </button> </td>
+				<td> <button  id = "b14" onclick = "btnClk(b14)" disabled=true; style="width:50px;height:50px"> 14 </button> </td>
+				<td> <button  id = "b15" onclick = "btnClk(b15)" disabled=true; style="width:50px;height:50px"> 15 </button> </td>
+			</tr>
+
+			<tr>
+				<td> <button onclick = "btnClk(b16)"  id = "b16" disabled=true;  style="width:50px;height:50px"> 16 </button> </td>
+				<td> <button onclick = "btnClk(b17)"  id = "b17" disabled=true; style="width:50px;height:50px"> 17 </button> </td>
+				<td> <button onclick = "btnClk(b18)"  id = "b18" disabled=true; style="width:50px;height:50px"> 18 </button> </td>
+				<td> <button onclick = "btnClk(b19)"  id = "b19" disabled=true; style="width:50px;height:50px"> 19 </button> </td>
+				<td> <button onclick = "btnClk(b20)"  id = "b20" disabled=true; style="width:50px;height:50px"> 20 </button> </td>
+			</tr>
+
+			<tr>
+				<td> <button  id = "b21" onclick = "btnClk(b21)" disabled=true; style="width:50px;height:50px"> 21 </button> </td>
+				<td> <button  id = "b22" onclick = "btnClk(b22)" disabled=true; style="width:50px;height:50px"> 22 </button> </td>
+				<td> <button  id = "b23" onclick = "btnClk(b23)" disabled=true; style="width:50px;height:50px"> 23 </button> </td>
+				<td> <button  id = "b24" onclick = "btnClk(b24)" disabled=true; style="width:50px;height:50px"> 24 </button> </td>
+				<td> <button  id = "b25" onclick = "btnClk(b25)" disabled=true; style="width:50px;height:50px"> 25 </button> </td>
+			</tr>
+		</table> <br>
+
+		<button id = "sg" onclick = "StartGame()" style="width:100px;height:30px">Start game</button>
+		<h1>Done By Sriram and Praveen</h1>
+	</body>
+</html>
