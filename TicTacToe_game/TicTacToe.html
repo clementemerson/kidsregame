@@ -1,0 +1,247 @@
+<html>
+<head>
+<title>
+Tic Tac Toe
+</title>
+<script>
+var click = false;
+var player1 = [];
+var player2 = [];
+var v1;
+var Win; //Win =1 - Winner, Win =2 Draw
+function Reload()
+{
+	document.location.reload();
+}
+function Lockbuttons()
+{
+	tik1.disabled = true;
+	tik2.disabled = true;
+	tik3.disabled = true;
+	tik4.disabled = true;
+	tik5.disabled = true;
+	tik6.disabled = true;
+	tik7.disabled = true;
+	tik8.disabled = true;
+	tik9.disabled = true;
+	
+}
+function UnLockButtons()
+{
+	tik1.disabled = false;
+	tik2.disabled = false;
+	tik3.disabled = false;
+	tik4.disabled = false;
+	tik5.disabled = false;
+	tik6.disabled = false;
+	tik7.disabled = false;
+	tik8.disabled = false;
+	tik9.disabled = false;
+	
+}
+
+function FindWinner(PlayerClicks)
+{
+	if(PlayerClicks.indexOf(1) != -1 )
+	{
+		if(PlayerClicks.indexOf(2) != -1)
+		{
+			if(PlayerClicks.indexOf(3) != -1)
+			{
+				Win = 1;
+			}
+		}
+	}
+	if(PlayerClicks.indexOf(3) != -1 )
+	{
+		if(PlayerClicks.indexOf(5) != -1)
+		{
+			if(PlayerClicks.indexOf(7) != -1)
+			{
+				Win = 1;
+			}
+		}
+	}
+	if(PlayerClicks.indexOf(4) != -1 )
+	{
+		if(PlayerClicks.indexOf(5) != -1)
+		{
+			if(PlayerClicks.indexOf(6) != -1)
+			{
+				Win = 1;			
+			}	
+		}
+	}
+	if(PlayerClicks.indexOf(1) != -1 )
+	{
+		if(PlayerClicks.indexOf(4) != -1)
+		{
+			if(PlayerClicks.indexOf(7) != -1)
+			{
+				Win = 1;
+			}
+		}
+	}
+	if(PlayerClicks.indexOf(2) != -1 )
+	{
+		if(PlayerClicks.indexOf(5) != -1)
+		{
+			if(PlayerClicks.indexOf(8) != -1)
+			{
+				Win = 1;
+			}
+		}
+	}
+	if(PlayerClicks.indexOf(7) != -1 )
+	{
+		if(PlayerClicks.indexOf(8) != -1)
+		{
+			if(PlayerClicks.indexOf(9) != -1)
+			{
+				Win = 1;
+			}
+		}
+	}
+	if(PlayerClicks.indexOf(1) != -1 )
+	{
+		if(PlayerClicks.indexOf(5) != -1)
+		{
+			if(PlayerClicks.indexOf(9) != -1)
+			{
+				Win = 1;
+			}
+		}
+	}
+	if(PlayerClicks.indexOf(3) != -1 )
+	{
+		if(PlayerClicks.indexOf(6) != -1)
+		{
+			if(PlayerClicks.indexOf(9) != -1)
+			{
+				Win = 1;
+			}
+		}
+	}
+		if(Win != 1 )
+		{
+			if(player1.length + player2.length  === 9)
+				Win = 2;
+		}
+	
+}
+function result(ButtonId)
+{
+	if (ButtonId === tik1)
+	{
+		v1 =1;
+	}
+	if (ButtonId === tik2)
+	{
+        v1 = 2;
+	}
+	if (ButtonId === tik3)
+	{
+		 v1 = 3;
+	}
+	if (ButtonId === tik4)
+	{
+	     v1 = 4;
+	}
+	if (ButtonId === tik5)
+	{	
+		 v1 = 5;
+	}
+	if (ButtonId === tik6)
+	{
+		 v1 =6;
+	}
+	if (ButtonId === tik7)
+	{
+		 v1 =7;
+	}
+	if (ButtonId === tik8)
+	{
+		 v1 =8;
+	}
+	if (ButtonId === tik9)
+	{
+		 v1 =9;
+	}	
+	
+	if (click === false)
+	{
+		player1.push(v1);
+		//ButtonId.innerText = "X";
+		ButtonId.style.backgroundSize = "100% 100%";
+		ButtonId.style.backgroundImage = "url('X.png')";
+		ButtonId.disabled = true;
+		click = true;
+		if(player1.length >= 3)
+			FindWinner(player1);
+		if (Win === 1)
+		{
+			ShowResult.innerText = "Player 1 Wins";
+			Lockbuttons();
+		}
+		if( Win === 2)
+		{
+			ShowResult.innerText = "Draw";
+		}
+	}
+	else
+	{
+		player2.push (v1);
+		//ButtonId.innerText = "O";
+		
+		ButtonId.style.backgroundSize = "100% 100%";
+		ButtonId.style.backgroundImage = "url('O.png')";
+		ButtonId.disabled = true;
+		click=false;
+		if(player2.length >= 3)
+			FindWinner(player2);
+		if (Win === 1)
+		{
+			ShowResult.innerText = "Player 2 Wins";	
+			Lockbuttons();
+		}
+		if( Win === 2)
+		{
+			ShowResult.innerText = "Draw";
+		}
+	}
+	
+}
+</script>
+</head>
+
+<body onLoad=Lockbuttons() style = "background-image: url('TicTacToe.jpg') ;background-size : 100% 100%">
+<br><br><br><br><br><br>
+<h1 align=center> Tic Tac Toe  </h1>
+
+<table align=center>
+</br></br></br></br></br>
+<tr>
+<td> <button id="tik1" onclick="result(tik1)" style= "width:100px; height:100px"> </button> </td>
+<td> <button id="tik2" onclick="result(tik2)" style="width:100px; height:100px"> </button> </td>
+<td> <button id="tik3" onclick="result(tik3)" style="width:100px; height:100px"> </button> </td>
+</tr>
+<tr>
+<td> <button id="tik4"  onclick="result(tik4)" style= "width:100px; height:100px" ></button> </td>
+<td> <button id="tik5"  onclick="result(tik5)" style= "width:100px; height:100px" > </button> </td>
+<td> <button id="tik6"  onclick="result(tik6)" style= "width:100px; height:100px" > </button> </td>
+</tr>
+<tr>
+<td>  <button id="tik7"  onclick="result(tik7)" style= "width:100px; height:100px" > </button> </td>
+<td>  <button id="tik8"  onclick="result(tik8)" style= "width:100px; height:100px"> </button> </td>
+<td>  <button id="tik9"  onclick="result(tik9)" style= "width:100px; height:100px" > </button> </td>
+</tr>
+</table>
+<p id="ShowResult" align=center> </p>
+<div align=center>
+<br><br><br>
+<button id="start"  onclick="UnLockButtons()" align=center style= "width:100px; height:50px">START</button>
+<button id="reset" onclick="Reload()" align=center style= "width:100px; height:50px">RESET</button>
+</div>
+<h1 align="center">Done By Deepak and Vinitha</h1>
+</body>
+</html>
